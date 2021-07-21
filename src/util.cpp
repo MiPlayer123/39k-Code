@@ -10,37 +10,6 @@ void spin(motor *mot, double veloc, vex::brakeType brake_type) {
   }
 }
 
-Ball read_optical(optical *sensor) {
-  if (sensor->isNearObject()) {
-    double hue = sensor->hue();
-    if (hue < 240 && hue > 60) {
-      return Blue;
-    } else {
-      return Red;
-    }
-  } else {
-    return None;
-  }
-}
-
-Ball team_color() {
-  if (IsRed.pressing()) {
-    return Red;
-  } else {
-    return Blue;
-  }
-}
-
-Ball invert_color(Ball color) {
-  if (color == Red) {
-    return Blue;
-  } else if (color == Blue) {
-    return Red;
-  } else {
-    return None;
-  }
-}
-
 bool is_skills() {
   return Skills.pressing();
 }

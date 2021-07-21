@@ -8,18 +8,12 @@ extern motor BaseLeftRear;
 extern motor BaseLeftFront;
 extern motor BaseRightRear;
 extern motor BaseRightFront;
-extern motor UpperRoller;
-extern motor LowerRoller;
-extern motor LeftIntake;
-extern motor RightIntake;
-extern bumper Prog0;
-extern bumper ReverseTurns;
-extern bumper Prog1;
-extern inertial Inertial;
+extern motor FrontMogo;
+extern motor RearMogo;
+extern motor ChainLift;
+extern motor ChainBar;
 extern bumper Skills;
-extern bumper IsRed;
-extern optical BallSensor;
-extern bumper CycleTrigger;
+extern inertial Inertial;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
