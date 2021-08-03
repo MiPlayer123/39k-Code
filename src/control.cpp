@@ -3,6 +3,79 @@
 
 using namespace vex;
 
+//Voids for auton 
+
+void setBar(double rot){
+  //P loop 4bar height
+  double original = Bar.position(degrees)/360;
+  double error;
+  while(true){
+    error = rot - (Bar.position(degrees)/360 - original);
+    Bar.spin(fwd,error*1,pct);
+    if(error<.1){
+      Bar.stop(brake);
+      break;
+    }
+  }
+}
+
+void openClaw(){
+  //open claw
+  double degOpen = 270;
+  double error;
+  while(true){
+    error = degOpen - Claw.position(degrees);
+    Claw.spin(fwd,error*1,pct);
+    if(error<.1){
+      Claw.stop(brake);
+      break;
+    }
+  }
+}
+
+void closeClaw(){
+  //Close claw
+  double error;
+  while(true){
+    error = 0 - Claw.position(degrees);
+    Claw.spin(fwd,error*1,pct);
+    if(error<.1){
+      Claw.stop(brake);
+      break;
+    }
+  }
+}
+
+void moveFrontFork(double rot){
+  //raise or lower fork
+  double original = FrontMogo.position(degrees)/360;
+  double error;
+  while(true){
+    error = rot - (FrontMogo.position(degrees)/360 - original);
+    FrontMogo.spin(fwd,error*1,pct);
+    if(error<.1){
+      FrontMogo.stop(brake);
+      break;
+    }
+  }
+}
+
+void moveRearFork(double rot){
+  //raise or lower fork
+  double original = RearMogo.position(degrees)/360;
+  double error;
+  while(true){
+    error = rot - (RearMogo.position(degrees)/360 - original);
+    RearMogo.spin(fwd,error*1,pct);
+    if(error<.1){
+      RearMogo.stop(brake);
+      break;
+    }
+  }
+}
+
+/* Temporarily gone
+
 #define LAST_ERROR_NICHE 1000
 
 DualPidController::DualPidController(
@@ -107,3 +180,4 @@ void DualPidController::update(bool debug) {
   spin(m1, output);
   spin(m2, output);
 }
+*/

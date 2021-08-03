@@ -4,27 +4,26 @@
 #include <cmath>
 #include <ctime>
 #include "vex.h"
-#include "consts.h"
 
-enum Ball {
-  Red,
-  Blue,
-  None
-};
+extern const double EPSILON;
+extern const double TRACKING_POINT_TO_ODO_LEFT; // in
+extern const double TRACKING_POINT_TO_ODO_RIGHT; // in
+extern const double TRACKING_POINT_TO_ODO_DRIFT; // in
+extern const double TURNS_TO_INCHES; // in/turn
+extern const double MOVEMENT_THRESHOLD; // in
+extern const double THETA_THRESHOLD; // radians
+extern const double M_2PI;
+extern const double TURNING_RADIUS; // in
+extern const double LIGHT_SENSOR_GAP; // in
+extern const double RPM_TO_INCHES_PER_SEC;
+extern const double MOTOR_PERCENT_TO_IN_PER_SEC;
+
+// Power the base with the given left and right percentages
+void drive(double left, double right, vex::brakeType brake_type=brake);
 
 // Spin the given motor with the given power (in units of percent). If the power
 // is very close to 0 then the brake is applied.
 void spin(motor *mot, double veloc, vex::brakeType brake_type=brake);
-
-// Interpret the data from an optical sensor as either a red ball, blue ball, or
-// no ball.
-Ball read_optical(optical *sensor);
-
-// Our team color.
-Ball team_color();
-
-// Red -> Blue, Blue -> Red, and None -> None.
-Ball invert_color(Ball color);
 
 // Whether or not we're running skills.
 bool is_skills();

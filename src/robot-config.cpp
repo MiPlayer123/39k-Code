@@ -15,10 +15,12 @@ motor BaseRightRear = motor(PORT21, ratio6_1, true);
 motor BaseRightFront = motor(PORT9, ratio6_1, false);
 motor FrontMogo = motor(PORT7, ratio36_1, false);
 motor RearMogo = motor(PORT4, ratio36_1, false);
-motor ChainLift = motor(PORT5, ratio18_1, false);
-motor ChainBar = motor(PORT10, ratio18_1, false);
+motor Bar = motor(PORT5, ratio36_1, false);
+motor Claw = motor(PORT10, ratio36_1, false);
 bumper Skills = bumper(Brain.ThreeWirePort.H);
 inertial Inertial = inertial(PORT15);
+bumper Red = bumper(Brain.ThreeWirePort.A);
+bumper Blue = bumper(Brain.ThreeWirePort.B);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

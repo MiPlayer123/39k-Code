@@ -17,30 +17,40 @@
 // BaseRightFront       motor         9               
 // FrontMogo            motor         7               
 // RearMogo             motor         4               
-// ChainLift            motor         5               
-// ChainBar             motor         10              
+// Bar                  motor         5               
+// Claw                 motor         10              
 // Skills               bumper        H               
 // Inertial             inertial      15              
+// Red                  bumper        A               
+// Blue                 bumper        B               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
 #include "vex_controller.h"
-#include "consts.h"
 #include "kalman.h"
 #include "control.h"
 #include "chasis.h"
-#include "subsys.h"
 
 using namespace vex;
 
 void auton() {
 
+  if(is_skills()){
+    //Skills
+  } 
+  
+  else if (Red.pressing()){
+    //Red auto
+  } 
+  
+  else if (Blue.pressing()){
+    //Blue auto
+  }
+
 }
 
 void usercontrol() {
-  // Make sure the PIDs are off
-  unlock();
-
+  
   // Whether or not the left/right side of the base needs to be stopped
   bool stop_left = true;
   bool stop_right = true;
@@ -90,28 +100,54 @@ void usercontrol() {
 
  
 
-    // If L1 is pressed, outtake
-    if (l1_pressing && !l2_pressing) {
-
+    // If L1 is pressed, claw
+    if (l1_pressing) {
+      Claw.spin(reverse,100,pct);
     }
-    // If L2 is pressed, intake
-    else if (!l1_pressing && l2_pressing) {
-
+    // If L2 is pressed, claw
+    else if (l2_pressing) {
+        Claw.spin(fwd,100,pct);
+    }
+    else{
+      Claw.stop( brake);
     }
     // By default the intakes are off
 
     // In skills, link the right button to intaking
-    if ((r1_pressing || r2_pressing) && is_skills()) {
-
-    }
-
-    // If R1 is pressed, throw the ball out the top
     if (r1_pressing) {
-
+      Bar.spin(fwd,100,pct);
     }
-    // If R2 is pressed, discard the ball out the back
     else if (r2_pressing) {
+      Bar.spin(reverse,100,pct);
+    }
 
+    else {
+      Bar.stop(brake);
+    }
+
+        // If L1 is pressed, claw
+    if (Controller1.ButtonY.pressing()) {
+      FrontMogo.spin(reverse,100,pct);
+    }
+    // If L2 is pressed, claw
+    else if (Controller1.ButtonB.pressing()) {
+        FrontMogo.spin(fwd,100,pct);
+    }
+    else{
+      FrontMogo.stop( brake);
+    }
+    // By default the intakes are off
+
+    // In skills, link the right button to intaking
+    if (Controller1.ButtonUp.pressing()) {
+      RearMogo.spin(fwd,100,pct);
+    }
+    else if (Controller1.ButtonDown.pressing()) {
+      RearMogo.spin(reverse,100,pct);
+    }
+
+    else {
+      RearMogo.stop(brake);
     }
 
     // Increase the tick count
@@ -138,6 +174,8 @@ int main() {
 
   // Initialize our PIDs and rotation tracking thread
   initialize();
+
+  Claw.setPosition(0, degrees);
 
   Competition.autonomous(auton);
   Competition.drivercontrol(usercontrol);

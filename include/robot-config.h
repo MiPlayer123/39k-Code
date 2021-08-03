@@ -10,10 +10,12 @@ extern motor BaseRightRear;
 extern motor BaseRightFront;
 extern motor FrontMogo;
 extern motor RearMogo;
-extern motor ChainLift;
-extern motor ChainBar;
+extern motor Bar;
+extern motor Claw;
 extern bumper Skills;
 extern inertial Inertial;
+extern bumper Red;
+extern bumper Blue;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

@@ -1,5 +1,199 @@
 #include "chasis.h"
 
+#define TURN_KP 0.05
+#define TURN_KI 0.002
+#define TURN_KD 0.001
+#define TURN_MAX_A (BASE_MAX_V / 0.1)
+#define TURN_MAX_V (BASE_MAX_V * 0.7)
+#define TURN_MIN_V 3
+
+#define   kp 2.25 // Kp
+#define   ki 1.1 // Ki
+#define   kd  0.7 // Kd
+#define integral_threshold 5
+
+mutex heading_mtx;
+
+// Filter to track our rotation
+Kalman1D heading_filter(1.0, 0.50, 0.0, 0.0);
+
+void initialize() {
+// Start a daemon to update the filter in the background
+  thread([]() {
+    // Set our initial rotation to 0 regardless of the position of the robot
+    Inertial.setRotation(0, degrees);
+    
+    while(true) {
+      // Obtain our current rotation according to the sensor
+      double measured_rotation = Inertial.rotation();
+
+      // Update the filter
+      heading_mtx.lock();
+      heading_filter.update(measured_rotation);
+      heading_mtx.unlock();
+
+      // Wait 5ms before the next update
+      wait(5, msec);
+    }
+  })
+  // Allow the process to run in the background
+  .detach();
+}
+
+// Get the current rotation of the robot by querying the state of the filter
+double get_rotation() {
+  heading_mtx.lock();
+  double rotation = heading_filter.state;
+  heading_mtx.unlock();
+  return rotation;
+}
+
+void brake_unchecked() {
+  BaseLeftRear.stop(brakeType::brake);
+  BaseLeftFront.stop(brakeType::brake);
+  BaseRightRear.stop(brakeType::brake);
+  BaseRightFront.stop(brakeType::brake);
+}
+
+// Turn to an absolute rotation
+void turn_absolute_inertial(double target) {
+  double last_error = 1000;
+  double last_output = 0;
+  double integral = 0;
+
+  //long ticks = 0;
+  long brake_cycles = 0;
+
+  while (true) {
+    // Calculate the error
+    double error = target - get_rotation();
+
+    // Initialize the last error if it was not already
+    if (ae(last_error, 1000)) {
+      last_error = error;
+    }
+
+    // Calculate the integral and derivative if we're within the bound
+    double derivative;
+    if (fabs(error) > 10) {
+      integral = 0;
+      derivative = 0;
+    } else {
+      integral += error * BASE_DT;
+      derivative = (error - last_error) / BASE_DT;
+    }
+    
+    // Calculate the raw output and update the last error
+    double raw_output = TURNING_RADIUS * (TURN_KP * error + TURN_KI * integral + TURN_KD * derivative); // in/s
+    last_error = error;
+
+    // Constrain acceleration between iterations and calculate the output
+    double acceleration = clamp((raw_output - last_output) / BASE_DT, -TURN_MAX_A, TURN_MAX_A); // in/s/s
+    double output = last_output + acceleration * BASE_DT;
+
+    // Constrain the maximum velocity
+    // Maximum velocity we can have in order to decelerate to min_veloc with max_accel
+    double vmax = sqrt(sq(BASE_MIN_V) + 2 * TURN_MAX_A * fabs(error));
+
+    // Constrain this theoretical maximum with the given bounds
+    vmax = clamp(vmax, BASE_MIN_V + EPSILON, 100);
+    last_output = (output = clamp(output, -vmax, vmax));
+
+    // Constrain the minimum velocity
+    output = ithreshold(output, TURN_MIN_V);
+    output = clamp(output / MOTOR_PERCENT_TO_IN_PER_SEC, -80, 80);
+
+    // 
+    if (fabs(error) < 1) {
+      brake_unchecked();
+      brake_cycles += 1;
+    } else {
+      spin(&BaseLeftRear, output);
+      spin(&BaseLeftFront, output);
+      spin(&BaseRightRear, -output);
+      spin(&BaseRightFront, -output);
+      brake_cycles = 0;
+    }
+    if (brake_cycles > 10 && fabs(error) < 1) {
+      break;
+    }
+    wait(BASE_DT, sec);
+  }
+  BaseLeftFront.stop(vex::brakeType::brake);
+  BaseRightFront.stop(vex::brakeType::brake);
+  BaseRightRear.stop(vex::brakeType::brake);
+  BaseLeftRear.stop(vex::brakeType::brake);
+}
+
+void turn_rel_inertial(double target) {
+  turn_absolute_inertial(get_rotation() + target);
+}
+
+void inertial_drive(double target, double speed=50) {
+  BaseRightRear.setPosition(0, turns); 
+  BaseLeftRear.setPosition(0, turns);
+
+  //Starting pos
+  double angle = get_rotation();
+
+  // Accumulated error
+  double integral_c = 0;
+  double last_error;
+  double derivative;
+  double integral;
+
+  while (true) {
+    // Calculate the error
+    double error_c = angle - get_rotation();
+    double error1 = target - BaseRightRear.position(turns) * TURNS_TO_INCHES;
+    double error2 = target - BaseLeftRear.position(turns) * TURNS_TO_INCHES;
+    double error = (error1 + error2) / 2;
+
+    // Get the turn output
+    double raw_output_correct = (TURN_KP * error_c + 0.1 * integral_c); // in/s
+    integral_c += error_c * BASE_DT;
+
+    if (fabs(error) > integral_threshold) {
+      integral = 0;
+      derivative = 0;
+    } else {
+      integral += error * BASE_DT;
+      derivative = (error - last_error) / BASE_DT;
+    }
+    
+    double raw_output = kp * error + ki * integral + kd * derivative; // in/s
+    last_error = error;
+
+    // This is the extent to which we want to turn; a low value means no turns
+    double factor = 0.1 + fabs(error_c) / 45;
+    raw_output_correct *= factor;
+    //double correct_output = 2 * clamp(raw_output_correct, -speed, speed);
+
+    if(raw_output > speed) raw_output = speed;
+		else if(raw_output < -speed) raw_output = -speed; 
+    BaseLeftFront.spin(vex::directionType::fwd, raw_output + raw_output_correct, vex::velocityUnits::pct);
+    BaseLeftRear.spin(vex::directionType::fwd, raw_output + raw_output_correct, vex::velocityUnits::pct);
+    BaseRightFront.spin(vex::directionType::fwd, raw_output - raw_output_correct, vex::velocityUnits::pct);
+    BaseRightRear.spin(vex::directionType::fwd, raw_output - raw_output_correct, vex::velocityUnits::pct);
+
+		if(std::abs(error) <= .5){
+		  BaseLeftFront.stop(vex::brakeType::brake);
+      BaseRightFront.stop(vex::brakeType::brake);
+      BaseRightRear.stop(vex::brakeType::brake);
+      BaseLeftRear.stop(vex::brakeType::brake);
+			break;
+		}
+
+    // Apply the adjustment to the linear PID controllers
+    //base_left.set_adjustment(output);
+    //base_right.set_adjustment(-output);
+
+    // Wait until the next update
+    wait(BASE_DT, sec);
+  }
+}
+/* Teporarily gone
+
 // PID controllers for the left and right side of the base
 DualPidController base_left(
   &BaseLeftRear,
@@ -167,122 +361,4 @@ void move_rel(double left, double right, double max_time) {
 void lock() {
   move_rel(0, 0);
 }
-
-#define TURN_KP 0.05
-#define TURN_KI 0.002
-#define TURN_KD 0.001
-#define TURN_MAX_A (BASE_MAX_V / 0.1)
-#define TURN_MAX_V (BASE_MAX_V * 0.7)
-#define TURN_MIN_V 3
-
-// Turn to an absolute rotation
-void turn_absolute_inertial(double target) {
-  double last_error = 1000;
-  double last_output = 0;
-  double integral = 0;
-
-  long ticks = 0;
-  long brake_cycles = 0;
-
-  // Make sure the base PIDs aren't running while we're turning
-  chasis_mtx.lock();
-
-  tick_pids = false;
-  while (true) {
-    // Calculate the error
-    double error = target - get_rotation();
-
-    // Initialize the last error if it was not already
-    if (ae(last_error, 1000)) {
-      last_error = error;
-    }
-
-    // Calculate the integral and derivative if we're within the bound
-    double derivative;
-    if (fabs(error) > 10) {
-      integral = 0;
-      derivative = 0;
-    } else {
-      integral += error * BASE_DT;
-      derivative = (error - last_error) / BASE_DT;
-    }
-    
-    // Calculate the raw output and update the last error
-    double raw_output = TURNING_RADIUS * (TURN_KP * error + TURN_KI * integral + TURN_KD * derivative); // in/s
-    last_error = error;
-
-    // Constrain acceleration between iterations and calculate the output
-    double acceleration = clamp((raw_output - last_output) / BASE_DT, -TURN_MAX_A, TURN_MAX_A); // in/s/s
-    double output = last_output + acceleration * BASE_DT;
-
-    // Constrain the maximum velocity
-    // Maximum velocity we can have in order to decelerate to min_veloc with max_accel
-    double vmax = sqrt(sq(BASE_MIN_V) + 2 * TURN_MAX_A * fabs(error));
-
-    // Constrain this theoretical maximum with the given bounds
-    vmax = clamp(vmax, BASE_MIN_V + EPSILON, 100);
-    last_output = (output = clamp(output, -vmax, vmax));
-
-    // Constrain the minimum velocity
-    output = ithreshold(output, TURN_MIN_V);
-    output = clamp(output / MOTOR_PERCENT_TO_IN_PER_SEC, -80, 80);
-
-    // 
-    if (fabs(error) < 1) {
-      brake_unchecked();
-      brake_cycles += 1;
-    } else {
-      spin(&BaseLeftRear, output);
-      spin(&BaseLeftFront, output);
-      spin(&BaseRightRear, -output);
-      spin(&BaseRightFront, -output);
-      brake_cycles = 0;
-    }
-    if (brake_cycles > 10 && fabs(error) < 1) {
-      break;
-    }
-    wait(BASE_DT, sec);
-  }
-  chasis_mtx.unlock();
-  apply_brake();
-}
-
-void turn_rel_inertial(double target) {
-  turn_absolute_inertial(get_rotation() + target);
-}
-
-void correct_drive(double angle) {
-  // Accumulated error
-  double integral = 0;
-
-  while (true) {
-    // Calculate the error
-    double error = angle - get_rotation();
-
-    // Get the turn output
-    double raw_output = TURNING_RADIUS * (TURN_KP * error + 0.1 * integral); // in/s
-    integral += error * BASE_DT;
-
-    // Mod out the angle to be between 0 and 360 degrees
-    error = fmodf(error, 360);
-    if (error > 180) {
-      error = 360 - error;
-    } else if (error < -180) {
-      error += 360;
-    }
-
-    // This is the extent to which we want to turn; a low value means no turns
-    double factor = 0.1 + fabs(error) / 45;
-    raw_output *= factor;
-    double output = 2 * clamp(raw_output / MOTOR_PERCENT_TO_IN_PER_SEC, -100, 100);
-
-    // Apply the adjustment to the linear PID controllers
-    chasis_mtx.lock();
-    base_left.set_adjustment(output);
-    base_right.set_adjustment(-output);
-    chasis_mtx.unlock();
-
-    // Wait until the next update
-    wait(BASE_DT, sec);
-  }
-}
+*/
