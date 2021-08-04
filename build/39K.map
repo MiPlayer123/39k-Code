@@ -166,7 +166,7 @@ Discarded input sections
  .ARM.exidx.text._Z17turn_rel_inertiald
                 0x00000000        0x8 build/src/chasis.o
  .text._Z14inertial_drivedd
-                0x00000000      0x388 build/src/chasis.o
+                0x00000000      0x310 build/src/chasis.o
  .ARM.exidx.text._Z14inertial_drivedd
                 0x00000000        0x8 build/src/chasis.o
  .llvm_addrsig  0x00000000        0xa build/src/chasis.o
