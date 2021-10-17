@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -13,16 +14,18 @@
 // Controller1          controller                    
 // BaseLeftRear         motor         1               
 // BaseLeftFront        motor         2               
-// BaseRightRear        motor         21              
-// BaseRightFront       motor         9               
-// FrontMogo            motor         7               
-// RearMogo             motor         4               
-// Bar                  motor         5               
+// BaseRightRear        motor         11              
+// BaseRightFront       motor         19              
+// FrontMogo            motor         20              
+// RearMogo             motor         14              
+// Bar                  motor         13              
 // Claw                 motor         10              
 // Skills               bumper        H               
 // Inertial             inertial      15              
 // Red                  bumper        A               
 // Blue                 bumper        B               
+// Controller2          controller                    
+// Bar2                 motor         16              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -46,8 +49,16 @@ void auton() {
   else if (Blue.pressing()){
     //Blue auto
   }
+  //turn_absolute_inertial(90);
+  setBar(.5);
+  moveRot(5.5,40);
+  clawSpin(-.5);
+  setBar(-.5);
+  moveRot(-.5, 40);
+  moveRot(.5,40);
+  clawSpin(.5);
 
-}
+} 
 
 void usercontrol() {
   
@@ -102,11 +113,11 @@ void usercontrol() {
 
     // If L1 is pressed, claw
     if (l1_pressing) {
-      Claw.spin(reverse,100,pct);
+      Claw.spin(fwd,100,pct);
     }
     // If L2 is pressed, claw
     else if (l2_pressing) {
-        Claw.spin(fwd,100,pct);
+        Claw.spin(reverse,100,pct);
     }
     else{
       Claw.stop( brake);
@@ -116,38 +127,68 @@ void usercontrol() {
     // In skills, link the right button to intaking
     if (r1_pressing) {
       Bar.spin(fwd,100,pct);
+      Bar2.spin(fwd,100,pct);
     }
     else if (r2_pressing) {
       Bar.spin(reverse,100,pct);
+      Bar2.spin(reverse,100,pct);
     }
 
     else {
-      Bar.stop(brake);
+      Bar.stop(hold);
+      Bar2.stop(hold);
     }
 
-        // If L1 is pressed, claw
-    if (Controller1.ButtonY.pressing()) {
-      FrontMogo.spin(reverse,100,pct);
-    }
-    // If L2 is pressed, claw
-    else if (Controller1.ButtonB.pressing()) {
-        FrontMogo.spin(fwd,100,pct);
-    }
-    else{
-      FrontMogo.stop( brake);
-    }
-    // By default the intakes are off
+    if (Controller2.installed()){
+          // If L1 is pressed, claw
+      if (Controller2.ButtonR1.pressing()) {
+        FrontMogo.spin(reverse,100,pct);
+      }
+      // If L2 is pressed, claw
+      else if (Controller2.ButtonR2.pressing()) {
+          FrontMogo.spin(fwd,100,pct);
+      }
+      else{
+        FrontMogo.stop( hold);
+      }
+      // By default the intakes are off
 
-    // In skills, link the right button to intaking
-    if (Controller1.ButtonUp.pressing()) {
-      RearMogo.spin(fwd,100,pct);
-    }
-    else if (Controller1.ButtonDown.pressing()) {
-      RearMogo.spin(reverse,100,pct);
-    }
+      // In skills, link the right button to intaking
+      if (Controller2.ButtonL1.pressing()) {
+        RearMogo.spin(fwd,100,pct);
+      }
+      else if (Controller2.ButtonL2.pressing()) {
+        RearMogo.spin(reverse,100,pct);
+      }
 
-    else {
-      RearMogo.stop(brake);
+      else {
+        RearMogo.stop(hold);
+      }
+    } else{
+                // If L1 is pressed, claw
+      if (Controller1.ButtonX.pressing()) {
+        FrontMogo.spin(reverse,100,pct);
+      }
+      // If L2 is pressed, claw
+      else if (Controller1.ButtonB.pressing()) {
+          FrontMogo.spin(fwd,100,pct);
+      }
+      else{
+        FrontMogo.stop( hold);
+      }
+      // By default the intakes are off
+
+      // In skills, link the right button to intaking
+      if (Controller1.ButtonUp.pressing()) {
+        RearMogo.spin(fwd,100,pct);
+      }
+      else if (Controller1.ButtonDown.pressing()) {
+        RearMogo.spin(reverse,100,pct);
+      }
+
+      else {
+        RearMogo.stop(hold);
+      }
     }
 
     // Increase the tick count

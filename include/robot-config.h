@@ -16,6 +16,8 @@ extern bumper Skills;
 extern inertial Inertial;
 extern bumper Red;
 extern bumper Blue;
+extern controller Controller2;
+extern motor Bar2;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

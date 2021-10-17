@@ -13,6 +13,8 @@ void openClaw();
 
 void closeClaw();
 
+void clawSpin(float rot);
+
 void moveRearFork(double rot);
 
 void moveFronFork(double rot);

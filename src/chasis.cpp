@@ -7,10 +7,10 @@
 #define TURN_MAX_V (BASE_MAX_V * 0.7)
 #define TURN_MIN_V 3
 
-#define   kp 2.25 // Kp
-#define   ki 1.1 // Ki
-#define   kd  0.7 // Kd
-#define integral_threshold 5
+#define   kp 1 // Kp
+#define   ki .0 // Ki
+#define   kd  0.5 // Kd
+#define integral_threshold 10
 
 mutex heading_mtx;
 
@@ -129,7 +129,70 @@ void turn_rel_inertial(double target) {
   turn_absolute_inertial(get_rotation() + target);
 }
 
-void inertial_drive(double target, double speed=50) {
+void inertialDrive(double target, double speed){
+	double lastError = 0;
+	double errorD = 0;
+	double _integral = 0;
+	double _derivative = 0;
+	double leftPos = 0;
+	double rightPos = 0;
+	double avg = 0;
+	double pwrD = 0;
+
+  BaseRightRear.setPosition(0, degrees); 
+  BaseLeftRear.setPosition(0, degrees);
+
+	double h0 = get_rotation();
+	double pwrT = 0;
+	double errorT = 0;
+	double _tDerivative = 0;
+	double _tIntegral = 0;
+	double lastErrorT = 0;
+
+  //reset motor encoders
+
+	while(true){
+		leftPos = BaseLeftRear.position(degrees);
+		rightPos = BaseRightRear.position(degrees);
+		avg = (leftPos + rightPos) / 2;
+		errorD = target/TURNS_TO_INCHES*360 - avg;
+		_integral += errorD;
+		_derivative = errorD - lastError;
+		pwrD = (kp * errorD) + (ki * _integral) + (kd * _derivative);
+
+		errorT = h0 - get_rotation();
+		_tIntegral += errorT;
+		_tDerivative = errorT - lastErrorT;
+		pwrT = (.1 * errorT) + (0 * _tIntegral) + (.2 * _tDerivative);
+		//drive power is limited to allow turn power to have an effect
+		if(pwrD > speed) pwrD = speed;
+		else if(pwrD < -speed) pwrD = -speed; 
+    BaseLeftFront.spin(vex::directionType::fwd, pwrD + pwrT, vex::velocityUnits::pct);
+    BaseLeftRear.spin(vex::directionType::fwd, pwrD + pwrT, vex::velocityUnits::pct);
+    BaseRightFront.spin(vex::directionType::fwd, pwrD - pwrT, vex::velocityUnits::pct);
+    BaseRightRear.spin(vex::directionType::fwd, pwrD - pwrT, vex::velocityUnits::pct);
+		lastError = errorD;
+		lastErrorT = errorT;
+		if(std::abs(errorD) <= 5){
+      BaseLeftFront.stop(vex::brakeType::brake);
+      BaseRightFront.stop(vex::brakeType::brake);
+      BaseRightRear.stop(vex::brakeType::brake);
+      BaseLeftRear.stop(vex::brakeType::brake);
+			break;
+		}
+	}
+}
+
+void moveRot (float rot, float speed)
+{
+  BaseLeftRear.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
+  BaseLeftFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
+  BaseRightRear.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
+  BaseRightFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, true);
+}
+
+/*
+void inertial_drive(double target, double speed=50.0) {
   BaseRightRear.setPosition(0, turns); 
   BaseLeftRear.setPosition(0, turns);
 
@@ -192,6 +255,7 @@ void inertial_drive(double target, double speed=50) {
     wait(BASE_DT, sec);
   }
 }
+*/
 /* Teporarily gone
 
 // PID controllers for the left and right side of the base

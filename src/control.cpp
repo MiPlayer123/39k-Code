@@ -5,21 +5,26 @@ using namespace vex;
 
 //Voids for auton 
 
-void setBar(double rot){
+void setBar(double t){
   //P loop 4bar height
-  double original = Bar.position(degrees)/360;
+  /*
+  double original = Bar.position(degrees);
   double error;
+  
   while(true){
-    error = rot - (Bar.position(degrees)/360 - original);
+    error = rot - (Bar.position(degrees)/ - original);
     Bar.spin(fwd,error*1,pct);
     if(error<.1){
       Bar.stop(brake);
       break;
     }
-  }
+  */
+  Bar.spin(fwd,100,pct);
+  vex::task::sleep(t*1000);
+  Bar.stop(hold);
 }
 
-void openClaw(){
+void closeClaw(){
   //open claw
   double degOpen = 270;
   double error;
@@ -33,7 +38,7 @@ void openClaw(){
   }
 }
 
-void closeClaw(){
+void openClaw(){
   //Close claw
   double error;
   while(true){
@@ -46,6 +51,10 @@ void closeClaw(){
   }
 }
 
+void clawSpin(float rot){
+  Claw.rotateFor(rot, rotationUnits::rev, 80, velocityUnits::pct, true);
+}
+
 void moveFrontFork(double rot){
   //raise or lower fork
   double original = FrontMogo.position(degrees)/360;
@@ -54,7 +63,7 @@ void moveFrontFork(double rot){
     error = rot - (FrontMogo.position(degrees)/360 - original);
     FrontMogo.spin(fwd,error*1,pct);
     if(error<.1){
-      FrontMogo.stop(brake);
+      FrontMogo.stop(hold);
       break;
     }
   }
@@ -68,7 +77,7 @@ void moveRearFork(double rot){
     error = rot - (RearMogo.position(degrees)/360 - original);
     RearMogo.spin(fwd,error*1,pct);
     if(error<.1){
-      RearMogo.stop(brake);
+      RearMogo.stop(hold);
       break;
     }
   }
