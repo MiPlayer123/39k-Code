@@ -7,9 +7,9 @@
 #define TURN_MAX_V (BASE_MAX_V * 0.7)
 #define TURN_MIN_V 3
 
-#define   kp 1 // Kp
-#define   ki .0 // Ki
-#define   kd  0.5 // Kd
+#define   kp 2 // Kp
+#define   ki 0 // Ki
+#define   kd  0.0 // Kd
 #define integral_threshold 10
 
 mutex heading_mtx;
@@ -156,6 +156,10 @@ void inertialDrive(double target, double speed){
 		rightPos = BaseRightRear.position(degrees);
 		avg = (leftPos + rightPos) / 2;
 		errorD = target/TURNS_TO_INCHES*360 - avg;
+
+    Controller1.Screen.setCursor(1, 1); 
+    Controller1.Screen.print(target/TURNS_TO_INCHES*360); 
+
 		_integral += errorD;
 		_derivative = errorD - lastError;
 		pwrD = (kp * errorD) + (ki * _integral) + (kd * _derivative);
@@ -163,7 +167,7 @@ void inertialDrive(double target, double speed){
 		errorT = h0 - get_rotation();
 		_tIntegral += errorT;
 		_tDerivative = errorT - lastErrorT;
-		pwrT = (.1 * errorT) + (0 * _tIntegral) + (.2 * _tDerivative);
+		//pwrT = (.1 * errorT) + (0 * _tIntegral) + (.2 * _tDerivative);
 		//drive power is limited to allow turn power to have an effect
 		if(pwrD > speed) pwrD = speed;
 		else if(pwrD < -speed) pwrD = -speed; 

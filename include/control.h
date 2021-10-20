@@ -15,6 +15,10 @@ void closeClaw();
 
 void clawSpin(float rot);
 
+void clawSpinT(float t);
+
+void mogoSpin(float rot);
+
 void moveRearFork(double rot);
 
 void moveFronFork(double rot);

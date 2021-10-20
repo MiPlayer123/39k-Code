@@ -44,20 +44,57 @@ void auton() {
   
   else if (Red.pressing()){
     //Red auto
+    moveRot(2, 30);
+    setBar(.6);
+    moveRot(2.5,30);
+    clawSpinT(-.6);
+    moveRot(-1,30);
+    setBar(-.6);
+    moveRot(5,30);
+    moveRot(-3,30);
   } 
   
   else if (Blue.pressing()){
     //Blue auto
+  } else{
+    //turn_absolute_inertial(45);
+    mogoSpin(-1.34);
+    moveRot(-2.5, 30);
+    mogoSpin(1);
+    turn_absolute_inertial(90);
+    moveRot(.5,40);
+    turn_absolute_inertial(90);
+    moveRot(10, 40);
+    spin(&BaseRightRear, 40);
+    spin(&BaseRightFront, 40);
+    spin(&BaseLeftRear, 40);
+    spin(&BaseLeftFront, 40);
+    Claw.spin(fwd,80,pct);
+    vex::task::sleep(700);
+    BaseLeftRear.stop(brake);
+    BaseLeftFront.stop(brake);
+    BaseRightRear.stop(brake);
+    BaseRightFront.stop(brake);
+    Claw.stop(hold);
+    moveRot(4,40);
+    setBar(.2);
+    turn_absolute_inertial(120);
+    moveRot(2,40);
+    setBar(1.5);
+    moveRot(7,40);
+    turn_absolute_inertial(115);
+    setBar(-.3);
+    clawSpinT(-.7);
+    moveRot(-.5,30); //goal on platform
+    moveRot(-3.2,30);
+    turn_absolute_inertial(225);
+    setBar(-1);
+    mogoSpin(-1);
+    moveRot(24,40);
+    moveRot(-2.9,30);
+    turn_absolute_inertial(90);
+    moveRot(15,40);
   }
-  //turn_absolute_inertial(90);
-  setBar(.5);
-  moveRot(5.5,40);
-  clawSpin(-.5);
-  setBar(-.5);
-  moveRot(-.5, 40);
-  moveRot(.5,40);
-  clawSpin(.5);
-
 } 
 
 void usercontrol() {
@@ -217,6 +254,7 @@ int main() {
   initialize();
 
   Claw.setPosition(0, degrees);
+  Bar.setPosition(0, deg);
 
   Competition.autonomous(auton);
   Competition.drivercontrol(usercontrol);

@@ -12,19 +12,33 @@ void setBar(double t){
   double error;
   
   while(true){
-    error = rot - (Bar.position(degrees)/ - original);
+    error = rot*360 - (Bar.position(degrees)/ - original);
     Bar.spin(fwd,error*1,pct);
+    Bar2.spin(fwd,error*1,pct);
     if(error<.1){
       Bar.stop(brake);
+      Bar2.stop(brake);
       break;
     }
+  }
   */
-  Bar.spin(fwd,100,pct);
-  vex::task::sleep(t*1000);
-  Bar.stop(hold);
+  if(t>0){
+    Bar.spin(fwd,100,pct);
+    Bar2.spin(fwd,100,pct);
+    vex::task::sleep(t*1000);
+    Bar.stop(hold);
+    Bar2.stop(hold);
+  } else{    
+    Bar.spin(reverse,100,pct);
+    Bar2.spin(reverse,100,pct);
+    vex::task::sleep(-t*1000);
+    Bar.stop(hold);
+    Bar2.stop(hold);
+    
+  }
 }
 
-void closeClaw(){
+void openClaw(){
   //open claw
   double degOpen = 270;
   double error;
@@ -38,7 +52,7 @@ void closeClaw(){
   }
 }
 
-void openClaw(){
+void closeClaw(){
   //Close claw
   double error;
   while(true){
@@ -55,18 +69,20 @@ void clawSpin(float rot){
   Claw.rotateFor(rot, rotationUnits::rev, 80, velocityUnits::pct, true);
 }
 
-void moveFrontFork(double rot){
-  //raise or lower fork
-  double original = FrontMogo.position(degrees)/360;
-  double error;
-  while(true){
-    error = rot - (FrontMogo.position(degrees)/360 - original);
-    FrontMogo.spin(fwd,error*1,pct);
-    if(error<.1){
-      FrontMogo.stop(hold);
-      break;
-    }
+void clawSpinT(float t){
+    if(t>0){
+    Claw.spin(fwd,80,pct);
+    vex::task::sleep(t*1000);
+    Claw.stop(hold);
+  } else{    
+    Claw.spin(reverse,80,pct);
+    vex::task::sleep(-t*1000);
+    Claw.stop(hold);
   }
+}
+
+void mogoSpin(float rot){
+  RearMogo.rotateFor(rot, rotationUnits::rev, 80, velocityUnits::pct, true);
 }
 
 void moveRearFork(double rot){
