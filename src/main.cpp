@@ -56,6 +56,12 @@ void auton() {
   
   else if (Blue.pressing()){
     //Blue auto
+    moveRot(2, 30);
+    setBar(.6);
+    moveRot(2.5,30);
+    clawSpinT(-.6);
+    moveRot(-1,30);
+    setBar(-.6);
   } else{
     //turn_absolute_inertial(45);
     mogoSpin(-1.34);
