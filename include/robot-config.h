@@ -18,6 +18,8 @@ extern bumper Red;
 extern bumper Blue;
 extern controller Controller2;
 extern motor Bar2;
+extern bumper leftRush;
+extern bumper rightRush;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

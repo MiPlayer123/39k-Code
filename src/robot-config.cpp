@@ -23,6 +23,8 @@ bumper Red = bumper(Brain.ThreeWirePort.A);
 bumper Blue = bumper(Brain.ThreeWirePort.B);
 controller Controller2 = controller(partner);
 motor Bar2 = motor(PORT16, ratio36_1, false);
+bumper leftRush = bumper(Brain.ThreeWirePort.C);
+bumper rightRush = bumper(Brain.ThreeWirePort.D);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

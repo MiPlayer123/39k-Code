@@ -26,6 +26,8 @@
 // Blue                 bumper        B               
 // Controller2          controller                    
 // Bar2                 motor         16              
+// leftRush             bumper        C               
+// rightRush            bumper        D               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -62,7 +64,39 @@ void auton() {
     clawSpinT(-.6);
     moveRot(-1,30);
     setBar(-.6);
-  } else{
+  } 
+  else if(leftRush.pressing()){
+    turn_absolute_inertial(5);
+    moveRot(10,250);
+    spin(&BaseRightRear, 40);
+    spin(&BaseRightFront, 40);
+    spin(&BaseLeftRear, 40);
+    spin(&BaseLeftFront, 40);
+    Claw.spin(fwd,80,pct);
+    vex::task::sleep(700);
+    BaseLeftRear.stop(brake);
+    BaseLeftFront.stop(brake);
+    BaseRightRear.stop(brake);
+    BaseRightFront.stop(brake);
+    Claw.stop(hold);
+    moveRot(-10,70);
+  }
+  else if (rightRush.pressing()) {
+    moveRot(10,250);
+    spin(&BaseRightRear, 40);
+    spin(&BaseRightFront, 40);
+    spin(&BaseLeftRear, 40);
+    spin(&BaseLeftFront, 40);
+    Claw.spin(fwd,80,pct);
+    vex::task::sleep(700);
+    BaseLeftRear.stop(brake);
+    BaseLeftFront.stop(brake);
+    BaseRightRear.stop(brake);
+    BaseRightFront.stop(brake);
+    Claw.stop(hold);
+    moveRot(-10,70);
+  }
+  else{
     //turn_absolute_inertial(45);
     mogoSpin(-1.34);
     moveRot(-2.5, 30);
@@ -70,7 +104,9 @@ void auton() {
     turn_absolute_inertial(90);
     moveRot(.5,40);
     turn_absolute_inertial(90);
-    moveRot(10, 40);
+    moveRot(5, 30);
+    turn_absolute_inertial(90);
+    moveRot(5,20);
     spin(&BaseRightRear, 40);
     spin(&BaseRightFront, 40);
     spin(&BaseLeftRear, 40);
