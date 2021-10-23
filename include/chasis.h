@@ -28,4 +28,6 @@ void inertialDrive(double target, double speed);
 
 void moveRot (float rot, float speed);
 
+void inertial_drive(double target, double speed);
+
 #endif

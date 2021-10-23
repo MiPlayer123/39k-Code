@@ -1,5 +1,6 @@
 #include "chasis.h"
 
+//For PID turns
 #define TURN_KP 0.05
 #define TURN_KI 0.002
 #define TURN_KD 0.001
@@ -7,10 +8,16 @@
 #define TURN_MAX_V (BASE_MAX_V * 0.7)
 #define TURN_MIN_V 3
 
-#define   kp 2 // Kp
-#define   ki 0 // Ki
-#define   kd  0.0 // Kd
+//For main inertial_drive
+#define   kp 21.1 // Ki
+#define   ki 1.1 // Ki
+#define   kd  0.7 // Kd
 #define integral_threshold 10
+
+//For other inertialDrive()
+#define   m_kp 2 // Kp
+#define   m_ki 0 // Ki
+#define   m_kd  0.0 // Kd
 
 mutex heading_mtx;
 
@@ -162,7 +169,7 @@ void inertialDrive(double target, double speed){
 
 		_integral += errorD;
 		_derivative = errorD - lastError;
-		pwrD = (kp * errorD) + (ki * _integral) + (kd * _derivative);
+		pwrD = (m_kp * errorD) + (m_ki * _integral) + (m_kd * _derivative);
 
 		errorT = h0 - get_rotation();
 		_tIntegral += errorT;
@@ -195,8 +202,7 @@ void moveRot (float rot, float speed)
   BaseRightFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, true);
 }
 
-/*
-void inertial_drive(double target, double speed=50.0) {
+void inertial_drive(double target, double speed) {
   BaseRightRear.setPosition(0, turns); 
   BaseLeftRear.setPosition(0, turns);
 
@@ -250,16 +256,8 @@ void inertial_drive(double target, double speed=50.0) {
       BaseLeftRear.stop(vex::brakeType::brake);
 			break;
 		}
-
-    // Apply the adjustment to the linear PID controllers
-    //base_left.set_adjustment(output);
-    //base_right.set_adjustment(-output);
-
-    // Wait until the next update
-    wait(BASE_DT, sec);
-  }
 }
-*/
+
 /* Teporarily gone
 
 // PID controllers for the left and right side of the base
