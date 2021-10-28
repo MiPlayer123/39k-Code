@@ -6,22 +6,6 @@ using namespace vex;
 //Voids for auton 
 
 void setBar(double t){
-  //P loop 4bar height
-  /*
-  double original = Bar.position(degrees);
-  double error;
-  
-  while(true){
-    error = rot*360 - (Bar.position(degrees)/ - original);
-    Bar.spin(fwd,error*1,pct);
-    Bar2.spin(fwd,error*1,pct);
-    if(error<.1){
-      Bar.stop(brake);
-      Bar2.stop(brake);
-      break;
-    }
-  }
-  */
   if(t>0){
     Bar.spin(fwd,100,pct);
     Bar2.spin(fwd,100,pct);
@@ -38,8 +22,20 @@ void setBar(double t){
   }
 }
 
+void spinBar(double speed){
+  Bar.spin(fwd,speed,pct);
+  Bar2.spin(fwd,speed,pct);
+}
+
+void stopBar(){
+  Bar.stop(hold);
+  Bar2.stop(hold);
+}
+
+
 void openClaw(){
   //open claw
+  /*
   double degOpen = 270;
   double error;
   while(true){
@@ -50,10 +46,13 @@ void openClaw(){
       break;
     }
   }
+  */
+  clawSpinT(-.7);
 }
 
 void closeClaw(){
   //Close claw
+  /*
   double error;
   while(true){
     error = 0 - Claw.position(degrees);
@@ -63,10 +62,8 @@ void closeClaw(){
       break;
     }
   }
-}
-
-void clawSpin(float rot){
-  Claw.rotateFor(rot, rotationUnits::rev, 80, velocityUnits::pct, true);
+  */
+  clawSpinT(.7);
 }
 
 void clawSpinT(float t){

@@ -9,10 +9,11 @@
 #define TURN_MIN_V 3
 
 //For main inertial_drive
-#define   kp 21.1 // Ki
-#define   ki 1.1 // Ki
+#define   kp 10 //21.1 // Ki
+#define   ki .8 //1.1 // Ki
 #define   kd  0.7 // Kd
 #define integral_threshold 10
+#define kp_c .2
 
 //For other inertialDrive()
 #define   m_kp 2 // Kp
@@ -239,7 +240,8 @@ void inertial_drive(double target, double speed) {
 
     // This is the extent to which we want to turn; a low value means no turns
     double factor = 0.1 + fabs(error_c) / 45;
-    raw_output_correct *= factor;
+    raw_output_correct *= factor; //old error
+    raw_output_correct = error_c*kp_c; //new ange error
     //double correct_output = 2 * clamp(raw_output_correct, -speed, speed);
 
     if(raw_output > speed) raw_output = speed;
@@ -257,7 +259,7 @@ void inertial_drive(double target, double speed) {
 			break;
 		}
 }
-
+}
 /* Teporarily gone
 
 // PID controllers for the left and right side of the base

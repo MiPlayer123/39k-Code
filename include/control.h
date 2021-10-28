@@ -9,11 +9,13 @@ using namespace vex;
 
 void setBar(double rot);
 
+void spinBar(double speed);
+
+void stopBar();
+
 void openClaw();
 
 void closeClaw();
-
-void clawSpin(float rot);
 
 void clawSpinT(float t);
 

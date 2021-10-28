@@ -1,4 +1,3 @@
-
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -42,63 +41,40 @@ void auton() {
 
   if(is_skills()){
     //Skills
-  } 
-  
-  else if (Red.pressing()){
-    //Red auto
-    moveRot(2, 30);
-    setBar(.6);
-    moveRot(2.5,30);
-    clawSpinT(-.6);
-    moveRot(-1,30);
-    setBar(-.6);
-    moveRot(5,30);
-    moveRot(-3,30);
-  } 
-  
-  else if (Blue.pressing()){
-    //Blue auto
-    moveRot(2, 30);
-    setBar(.6);
-    moveRot(2.5,30);
-    clawSpinT(-.6);
-    moveRot(-1,30);
-    setBar(-.6);
-  } 
-  else if(leftRush.pressing()){
-    turn_absolute_inertial(5);
-    moveRot(10,250);
-    spin(&BaseRightRear, 40);
-    spin(&BaseRightFront, 40);
-    spin(&BaseLeftRear, 40);
-    spin(&BaseLeftFront, 40);
-    Claw.spin(fwd,80,pct);
-    vex::task::sleep(700);
-    BaseLeftRear.stop(brake);
-    BaseLeftFront.stop(brake);
-    BaseRightRear.stop(brake);
-    BaseRightFront.stop(brake);
-    Claw.stop(hold);
-    moveRot(-10,70);
-  }
-  else if (rightRush.pressing()) {
-    moveRot(10,250);
-    spin(&BaseRightRear, 40);
-    spin(&BaseRightFront, 40);
-    spin(&BaseLeftRear, 40);
-    spin(&BaseLeftFront, 40);
-    Claw.spin(fwd,80,pct);
-    vex::task::sleep(700);
-    BaseLeftRear.stop(brake);
-    BaseLeftFront.stop(brake);
-    BaseRightRear.stop(brake);
-    BaseRightFront.stop(brake);
-    Claw.stop(hold);
-    moveRot(-10,70);
-  }
-  else{
-    //turn_absolute_inertial(45);
-    mogoSpin(-1.34);
+    mogoSpin(-1.28);
+    inertial_drive(-10, 30);
+    mogoSpin(1);
+    turn_absolute_inertial(90);
+    moveRot(.5,40);
+    turn_absolute_inertial(90);
+    inertial_drive(46, 50);
+    closeClaw();
+    inertial_drive(-12, 40);
+    spinBar(60);
+    turn_absolute_inertial(229);
+    stopBar();
+    inertial_drive(32, 40);
+    setBar(-.2);
+    openClaw(); //Score 1st yellow
+    inertial_drive(-5.1, 30);
+    turn_absolute_inertial(145);
+    inertial_drive(30, 50);
+    setBar(-1.15);
+    inertial_drive(24, 30);
+    closeClaw();
+    setBar(.2);
+    turn_absolute_inertial(270);
+    inertial_drive(18, 50);
+    spinBar(60);
+    turn_absolute_inertial(310);
+    stopBar();
+    inertial_drive(27, 40);
+    setBar(-.2);
+    openClaw();
+
+    
+    /*
+        mogoSpin(-1.34);
     moveRot(-2.5, 30);
     mogoSpin(1);
     turn_absolute_inertial(90);
@@ -136,6 +112,113 @@ void auton() {
     moveRot(-2.9,30);
     turn_absolute_inertial(90);
     moveRot(15,40);
+    */
+  } 
+  
+  else if (Red.pressing()){
+    //Red auto
+    turn_absolute_inertial(45);
+    setBar(.6);
+    inertial_drive(15, 50);
+    clawSpinT(-.7); //Drop rings
+    inertial_drive(-5, 50);
+    setBar(-.6);
+    inertial_drive(10, 50);
+    inertial_drive(-1.8, 30);
+    turn_absolute_inertial(-44.2);
+    inertial_drive(58, 80); //Grab Goal
+    moveRot(.01, 10);
+    inertial_drive(5, 30);
+    closeClaw();
+    inertial_drive(-60, 70);
+    turn_absolute_inertial(135);
+    inertial_drive(5, 30);
+    setBar(.5);
+    openClaw();
+
+    /* WIP
+    Claw.spin(fwd,20,pct);
+    inertial_drive(48, 98.5);
+    Claw.stop(hold);
+    clawSpinT(.3);
+    inertial_drive(-33, 50);
+    setBar(.2);
+    turn_rel_inertial(-75);
+    inertial_drive(-1.5, 20);
+    mogoSpin(-.8);
+    moveRot(.1,30);
+    RearMogo.spin(fwd,-5,pct);
+    inertial_drive(3, 10);
+    */
+    /*old auto
+    moveRot(2, 30);
+    setBar(.6);
+    moveRot(2.5,30);
+    clawSpinT(-.6);
+    moveRot(-1,30);
+    setBar(-.6);
+    moveRot(5,30);
+    moveRot(-3,30);
+    */
+  } 
+  
+  else if (Blue.pressing()){
+    //Blue auto
+    Claw.spin(fwd,25,pct);
+    inertial_drive(48, 98.5);
+    Claw.stop(hold);
+    clawSpinT(.3);
+    inertial_drive(-37, 50);
+    /*Old Auto
+    moveRot(2, 30);
+    setBar(.6);
+    moveRot(2.5,30);
+    clawSpinT(-.6);
+    moveRot(-1,30);
+    setBar(-.6);
+    */
+  } 
+  else if(leftRush.pressing()){
+    turn_absolute_inertial(5);
+    moveRot(10,250);
+    spin(&BaseRightRear, 40);
+    spin(&BaseRightFront, 40);
+    spin(&BaseLeftRear, 40);
+    spin(&BaseLeftFront, 40);
+    Claw.spin(fwd,80,pct);
+    vex::task::sleep(700);
+    BaseLeftRear.stop(brake);
+    BaseLeftFront.stop(brake);
+    BaseRightRear.stop(brake);
+    BaseRightFront.stop(brake);
+    Claw.stop(hold);
+    moveRot(-10,70);
+  }
+  else if (rightRush.pressing()) {
+    moveRot(10,250);
+    spin(&BaseRightRear, 40);
+    spin(&BaseRightFront, 40);
+    spin(&BaseLeftRear, 40);
+    spin(&BaseLeftFront, 40);
+    Claw.spin(fwd,80,pct);
+    vex::task::sleep(700);
+    BaseLeftRear.stop(brake);
+    BaseLeftFront.stop(brake);
+    BaseRightRear.stop(brake);
+    BaseRightFront.stop(brake);
+    Claw.stop(hold);
+    moveRot(-10,70);
+  }
+  else{
+    //turn_absolute_inertial(90);
+    /*
+    Claw.spin(fwd,25,pct);
+    inertial_drive(48, 98.5);
+    Claw.stop(hold);
+    clawSpinT(.3);
+    inertial_drive(-45, 50);
+    */
+    inertial_drive(72, 60);
   }
 } 
 
