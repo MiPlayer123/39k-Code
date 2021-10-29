@@ -41,14 +41,14 @@ void auton() {
 
   if(is_skills()){
     //Skills
-    mogoSpin(-1.28);
+    mogoSpin(-1.28); //Lift alliance goal
     inertial_drive(-10, 30);
     mogoSpin(1);
     turn_absolute_inertial(90);
     moveRot(.5,40);
     turn_absolute_inertial(90);
     inertial_drive(46, 50);
-    closeClaw();
+    closeClaw(); //Grab yellow
     inertial_drive(-12, 40);
     spinBar(60);
     turn_absolute_inertial(229);
@@ -61,17 +61,43 @@ void auton() {
     inertial_drive(30, 50);
     setBar(-1.15);
     inertial_drive(24, 30);
-    closeClaw();
+    closeClaw(); //grab 3nd yellow
     setBar(.2);
     turn_absolute_inertial(270);
     inertial_drive(18, 50);
     spinBar(60);
     turn_absolute_inertial(310);
     stopBar();
+    setBar(.4);
     inertial_drive(27, 40);
     setBar(-.2);
-    openClaw();
-
+    openClaw(); //Drop 2nd yellow
+    
+    inertial_drive(-0, 40);
+    spinBar(-80);
+    turn_absolute_inertial(180);
+    stopBar();
+    inertial_drive(48, 40);
+    closeClaw(); //grab 2nd allance
+    setBar(.2);
+    inertial_drive(-6, 40);
+    turn_absolute_inertial(60);
+    inertial_drive(70, 60);
+    spinBar(80);
+    inertial_drive(20, 30);
+    stopBar();
+    openClaw(); //Drop 2nd alliance gaol
+    inertial_drive(-5, 30);
+    spinBar(100);
+    turn_absolute_inertial(0);
+    mogoSpin(-1); //Drop 1st allance goal
+    inertial_drive(48, 40);
+    closeClaw(); //Grab oppsing 
+    spinBar(.4);
+    inertial_drive(-5, 30);
+    turn_absolute_inertial(-325);
+    inertial_drive(80, 70); //push 2 mogos
+    
     
     /*
         mogoSpin(-1.34);
@@ -116,7 +142,7 @@ void auton() {
   } 
   
   else if (Red.pressing()){
-    //Red auto
+    //Right auto
     turn_absolute_inertial(45);
     setBar(.6);
     inertial_drive(15, 50);
@@ -163,7 +189,8 @@ void auton() {
   } 
   
   else if (Blue.pressing()){
-    //Blue auto
+    //Left auto
+    turn_absolute_inertial(0);
     Claw.spin(fwd,25,pct);
     inertial_drive(48, 98.5);
     Claw.stop(hold);
@@ -195,6 +222,13 @@ void auton() {
     moveRot(-10,70);
   }
   else if (rightRush.pressing()) {
+    //Right rush
+    Claw.spin(fwd,25,pct);
+    inertial_drive(48, 98.5);
+    Claw.stop(hold);
+    clawSpinT(.3);
+    inertial_drive(-37, 50);
+    /*
     moveRot(10,250);
     spin(&BaseRightRear, 40);
     spin(&BaseRightFront, 40);
@@ -208,6 +242,7 @@ void auton() {
     BaseRightFront.stop(brake);
     Claw.stop(hold);
     moveRot(-10,70);
+    */
   }
   else{
     //turn_absolute_inertial(90);
