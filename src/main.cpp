@@ -17,7 +17,7 @@
 // BaseRightFront       motor         19              
 // RearMogo             motor         14              
 // Bar                  motor         9               
-// Claw                 motor         10              
+// Claw                 motor         17              
 // Skills               bumper        H               
 // Inertial             inertial      15              
 // Red                  bumper        A               
@@ -27,7 +27,7 @@
 // rightRush            bumper        D               
 // Intake               motor         4               
 // MogoRot              rotation      16              
-// BarRot               rotation      17              
+// BarRot               rotation      20              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -325,7 +325,7 @@ void usercontrol() {
         Claw.spin(reverse,100,pct);
     }
     else{
-      Claw.stop(hold);
+      Claw.stop(brake);
     }
     // By default the intakes are off
 
