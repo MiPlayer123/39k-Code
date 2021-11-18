@@ -7,22 +7,26 @@
 
 using namespace vex;
 
-void setBar(double rot);
+void setBar(double degs);
 
-void spinBar(double speed);
+void barThread(double degs);
 
-void stopBar();
+void barT(double t);
+
+void setMogo(double degs);
+
+void mogoThread(double degs);
+
+void mogoPos(int pos, bool daemon);
+
+void spinIntake();
+
+void stopIntake();
 
 void openClaw();
 
 void closeClaw();
 
 void clawSpinT(float t);
-
-void mogoSpin(float rot);
-
-void moveRearFork(double rot);
-
-void moveFronFork(double rot);
 
 #endif

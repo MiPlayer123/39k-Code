@@ -15,18 +15,19 @@
 // BaseLeftFront        motor         2               
 // BaseRightRear        motor         11              
 // BaseRightFront       motor         19              
-// FrontMogo            motor         20              
 // RearMogo             motor         14              
-// Bar                  motor         13              
+// Bar                  motor         9               
 // Claw                 motor         10              
 // Skills               bumper        H               
 // Inertial             inertial      15              
 // Red                  bumper        A               
 // Blue                 bumper        B               
 // Controller2          controller                    
-// Bar2                 motor         16              
 // leftRush             bumper        C               
 // rightRush            bumper        D               
+// Intake               motor         4               
+// MogoRot              rotation      16              
+// BarRot               rotation      17              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -40,104 +41,82 @@ using namespace vex;
 void auton() {
 
   if(is_skills()){
-    //Skills
-    mogoSpin(-1.28); //Lift alliance goal
-    inertial_drive(-10, 30);
-    mogoSpin(1);
+    //mogoSpin(-1.28); //Lift alliance goal
+    inertial_drive(-10, 20);
+    //mogoSpin(1);
     turn_absolute_inertial(90);
     moveRot(.5,40);
     turn_absolute_inertial(90);
     inertial_drive(46, 50);
     closeClaw(); //Grab yellow
+    setBar(0.2);
     inertial_drive(-12, 40);
-    spinBar(60);
-    turn_absolute_inertial(229);
-    stopBar();
-    inertial_drive(32, 40);
-    setBar(-.2);
+    turn_absolute_inertial(228);
+    setBar(1.3);
+    inertial_drive(35.4, 40);
+    setBar(-.3);
     openClaw(); //Score 1st yellow
-    inertial_drive(-5.1, 30);
-    turn_absolute_inertial(145);
+    inertial_drive(-5.5, 30);
+    turn_absolute_inertial(144);
+    //turn_absolute_inertial(180);
     inertial_drive(30, 50);
-    setBar(-1.15);
-    inertial_drive(24, 30);
-    closeClaw(); //grab 3nd yellow
-    setBar(.2);
+    setBar(-1.2);
+    inertial_drive(26, 30);
+    closeClaw(); //grab 2nd yellow
+    setBar(.3);
     turn_absolute_inertial(270);
-    inertial_drive(18, 50);
-    spinBar(60);
-    turn_absolute_inertial(310);
-    stopBar();
-    setBar(.4);
-    inertial_drive(27, 40);
+    inertial_drive(15, 50);
+    //spinBar(60);
+    turn_absolute_inertial(303);
+    //stopBar();
+    setBar(.5);
+    inertial_drive(28, 40);
     setBar(-.2);
     openClaw(); //Drop 2nd yellow
-    
-    inertial_drive(-0, 40);
-    spinBar(-80);
-    turn_absolute_inertial(180);
-    stopBar();
-    inertial_drive(48, 40);
-    closeClaw(); //grab 2nd allance
-    setBar(.2);
-    inertial_drive(-6, 40);
-    turn_absolute_inertial(60);
-    inertial_drive(70, 60);
-    spinBar(80);
-    inertial_drive(20, 30);
-    stopBar();
-    openClaw(); //Drop 2nd alliance gaol
-    inertial_drive(-5, 30);
-    spinBar(100);
-    turn_absolute_inertial(0);
-    mogoSpin(-1); //Drop 1st allance goal
-    inertial_drive(48, 40);
-    closeClaw(); //Grab oppsing 
-    spinBar(.4);
-    inertial_drive(-5, 30);
-    turn_absolute_inertial(-325);
-    inertial_drive(80, 70); //push 2 mogos
-    
-    
-    /*
-        mogoSpin(-1.34);
-    moveRot(-2.5, 30);
-    mogoSpin(1);
+    inertial_drive(-5, 40);
+    setBar(-1.2);
+    turn_absolute_inertial(182);
+    //stopBar();
+    inertial_drive(21, 40);
+    closeClaw(); //grab 2nd alliance
+    //inertial_drive(-5, 30);
     turn_absolute_inertial(90);
-    moveRot(.5,40);
-    turn_absolute_inertial(90);
-    moveRot(5, 30);
-    turn_absolute_inertial(90);
-    moveRot(5,20);
-    spin(&BaseRightRear, 40);
-    spin(&BaseRightFront, 40);
-    spin(&BaseLeftRear, 40);
-    spin(&BaseLeftFront, 40);
-    Claw.spin(fwd,80,pct);
-    vex::task::sleep(700);
-    BaseLeftRear.stop(brake);
-    BaseLeftFront.stop(brake);
-    BaseRightRear.stop(brake);
-    BaseRightFront.stop(brake);
-    Claw.stop(hold);
-    moveRot(4,40);
-    setBar(.2);
-    turn_absolute_inertial(120);
-    moveRot(2,40);
-    setBar(1.5);
-    moveRot(7,40);
-    turn_absolute_inertial(115);
-    setBar(-.3);
-    clawSpinT(-.7);
-    moveRot(-.5,30); //goal on platform
-    moveRot(-3.2,30);
+    inertial_drive(75, 70);
+    turn_absolute_inertial(270);
+    //mogoSpin(-1.28);
+    inertial_drive(5, 30);
     turn_absolute_inertial(225);
-    setBar(-1);
-    mogoSpin(-1);
-    moveRot(24,40);
-    moveRot(-2.9,30);
+    inertial_drive(-10, 30);  
+    //mogoSpin(1.28);
+    inertial_drive(10, 30);
+    turn_absolute_inertial(315);
+    inertial_drive(60, 70);
+
+    /*
+    mogoSpin(1.28);//grab other alliance rear
+    inertial_drive(25, 30);
+    turn_absolute_inertial(0);
+    inertial_drive(8, 30);
     turn_absolute_inertial(90);
-    moveRot(15,40);
+    //mikul insert your scoring thing //score 2nd allance
+    turn_absolute_inertial(0);
+    inertial_drive(48, 40);
+    closeClaw(); //grab other other alliance goal
+    inertial_drive(-5, 30);
+    turn_absolute_inertial(315);
+    inertial_drive(60, 70); //Push tall goal
+    turn_absolute_inertial(90);
+    mogoSpin(-1.28);
+    inertial_drive(10, 30);
+    mogoSpin(1.28); //drop other alliance goal
+    turn_absolute_inertial(0);
+    inertial_drive(15, 30);
+    turn_absolute_inertial(270);
+    */
+    //scoring thing
+    /* 2 neutrals + 2 alliance plat 
+       1 neutral + 2 alliance homezone 
+        220 auton run 
     */
   } 
   
@@ -190,22 +169,47 @@ void auton() {
   
   else if (Blue.pressing()){
     //Left auto
+    turn_absolute_inertial(5);
+    moveRot(10,250);
+    spin(&BaseRightRear, 40);
+    spin(&BaseRightFront, 40);
+    spin(&BaseLeftRear, 40);
+    spin(&BaseLeftFront, 40);
+    Claw.spin(fwd,80,pct);
+    vex::task::sleep(700);
+    BaseLeftRear.stop(brake);
+    BaseLeftFront.stop(brake);
+    BaseRightRear.stop(brake);
+    BaseRightFront.stop(brake);
+    Claw.stop(hold);
+    moveRot(-10,70);
+    /*
     turn_absolute_inertial(0);
     Claw.spin(fwd,25,pct);
     inertial_drive(48, 98.5);
     Claw.stop(hold);
     clawSpinT(.3);
     inertial_drive(-37, 50);
-    /*Old Auto
+    */
+    //Old Auto
+    /*
     moveRot(2, 30);
     setBar(.6);
     moveRot(2.5,30);
     clawSpinT(-.6);
     moveRot(-1,30);
-    setBar(-.6);
-    */
+    setBar(-.6)*/
   } 
   else if(leftRush.pressing()){
+    /*
+    //Claw.spin(fwd,20,pct);
+    moveRot(0.5,10);
+    inertial_drive(48,98);
+    //Claw.stop(brake);
+    clawSpinT(.3);
+    inertial_drive(-40, 90);
+    */
+
     turn_absolute_inertial(5);
     moveRot(10,250);
     spin(&BaseRightRear, 40);
@@ -223,10 +227,10 @@ void auton() {
   }
   else if (rightRush.pressing()) {
     //Right rush
-    Claw.spin(fwd,25,pct);
+    //Claw.spin(fwd,25,pct);
     inertial_drive(48, 98.5);
-    Claw.stop(hold);
-    clawSpinT(.3);
+    //Claw.stop(hold);
+    closeClaw();
     inertial_drive(-37, 50);
     /*
     moveRot(10,250);
@@ -253,7 +257,8 @@ void auton() {
     clawSpinT(.3);
     inertial_drive(-45, 50);
     */
-    inertial_drive(72, 60);
+    //inertial_drive(72, 60);
+    closeClaw();
   }
 } 
 
@@ -264,6 +269,9 @@ void usercontrol() {
   bool stop_right = true;
   // The number of loops we've run
   long ticks = 0;
+
+  //Intake stat
+  //bool intakeStat = false;
 
   while (true) {
     // Get the left and right base speeds from the controller
@@ -317,75 +325,42 @@ void usercontrol() {
         Claw.spin(reverse,100,pct);
     }
     else{
-      Claw.stop( brake);
+      Claw.stop(hold);
     }
     // By default the intakes are off
 
-    // In skills, link the right button to intaking
-    if (r1_pressing) {
+    if (r1_pressing) { //&& BarRot.position(deg)>=0
       Bar.spin(fwd,100,pct);
-      Bar2.spin(fwd,100,pct);
     }
-    else if (r2_pressing) {
+    else if (r2_pressing ) { //&& BarRot.position(deg)<=134
       Bar.spin(reverse,100,pct);
-      Bar2.spin(reverse,100,pct);
     }
 
     else {
       Bar.stop(hold);
-      Bar2.stop(hold);
     }
 
-    if (Controller2.installed()){
-          // If L1 is pressed, claw
-      if (Controller2.ButtonR1.pressing()) {
-        FrontMogo.spin(reverse,100,pct);
-      }
-      // If L2 is pressed, claw
-      else if (Controller2.ButtonR2.pressing()) {
-          FrontMogo.spin(fwd,100,pct);
-      }
-      else{
-        FrontMogo.stop( hold);
-      }
-      // By default the intakes are off
+    if (Controller1.ButtonUp.pressing()) {
+      RearMogo.spin(fwd,60,pct);
+    }
+    else if (Controller1.ButtonDown.pressing()) {
+      RearMogo.spin(reverse,60,pct);
+    } else if(Controller1.ButtonLeft.pressing()){
+      //Drop mogo down
+      mogoPos(3, false);
+    } else if (Controller1.ButtonRight.pressing()){
+      //Mogo to ring height
+      mogoPos(2, false);
+    }
+    else {
+      RearMogo.stop(hold);
+    }
 
-      // In skills, link the right button to intaking
-      if (Controller2.ButtonL1.pressing()) {
-        RearMogo.spin(fwd,100,pct);
-      }
-      else if (Controller2.ButtonL2.pressing()) {
-        RearMogo.spin(reverse,100,pct);
-      }
-
-      else {
-        RearMogo.stop(hold);
-      }
-    } else{
-                // If L1 is pressed, claw
-      if (Controller1.ButtonX.pressing()) {
-        FrontMogo.spin(reverse,100,pct);
-      }
-      // If L2 is pressed, claw
-      else if (Controller1.ButtonB.pressing()) {
-          FrontMogo.spin(fwd,100,pct);
-      }
-      else{
-        FrontMogo.stop( hold);
-      }
-      // By default the intakes are off
-
-      // In skills, link the right button to intaking
-      if (Controller1.ButtonUp.pressing()) {
-        RearMogo.spin(fwd,100,pct);
-      }
-      else if (Controller1.ButtonDown.pressing()) {
-        RearMogo.spin(reverse,100,pct);
-      }
-
-      else {
-        RearMogo.stop(hold);
-      }
+    if(Controller1.ButtonA.pressing()){
+      Intake.spin(fwd, 100, pct);
+    } 
+    else if(Controller1.ButtonY.pressing()){
+      Intake.stop(coast);
     }
 
     // Increase the tick count

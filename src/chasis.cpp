@@ -137,64 +137,6 @@ void turn_rel_inertial(double target) {
   turn_absolute_inertial(get_rotation() + target);
 }
 
-void inertialDrive(double target, double speed){
-	double lastError = 0;
-	double errorD = 0;
-	double _integral = 0;
-	double _derivative = 0;
-	double leftPos = 0;
-	double rightPos = 0;
-	double avg = 0;
-	double pwrD = 0;
-
-  BaseRightRear.setPosition(0, degrees); 
-  BaseLeftRear.setPosition(0, degrees);
-
-	double h0 = get_rotation();
-	double pwrT = 0;
-	double errorT = 0;
-	double _tDerivative = 0;
-	double _tIntegral = 0;
-	double lastErrorT = 0;
-
-  //reset motor encoders
-
-	while(true){
-		leftPos = BaseLeftRear.position(degrees);
-		rightPos = BaseRightRear.position(degrees);
-		avg = (leftPos + rightPos) / 2;
-		errorD = target/TURNS_TO_INCHES*360 - avg;
-
-    Controller1.Screen.setCursor(1, 1); 
-    Controller1.Screen.print(target/TURNS_TO_INCHES*360); 
-
-		_integral += errorD;
-		_derivative = errorD - lastError;
-		pwrD = (m_kp * errorD) + (m_ki * _integral) + (m_kd * _derivative);
-
-		errorT = h0 - get_rotation();
-		_tIntegral += errorT;
-		_tDerivative = errorT - lastErrorT;
-		//pwrT = (.1 * errorT) + (0 * _tIntegral) + (.2 * _tDerivative);
-		//drive power is limited to allow turn power to have an effect
-		if(pwrD > speed) pwrD = speed;
-		else if(pwrD < -speed) pwrD = -speed; 
-    BaseLeftFront.spin(vex::directionType::fwd, pwrD + pwrT, vex::velocityUnits::pct);
-    BaseLeftRear.spin(vex::directionType::fwd, pwrD + pwrT, vex::velocityUnits::pct);
-    BaseRightFront.spin(vex::directionType::fwd, pwrD - pwrT, vex::velocityUnits::pct);
-    BaseRightRear.spin(vex::directionType::fwd, pwrD - pwrT, vex::velocityUnits::pct);
-		lastError = errorD;
-		lastErrorT = errorT;
-		if(std::abs(errorD) <= 5){
-      BaseLeftFront.stop(vex::brakeType::brake);
-      BaseRightFront.stop(vex::brakeType::brake);
-      BaseRightRear.stop(vex::brakeType::brake);
-      BaseLeftRear.stop(vex::brakeType::brake);
-			break;
-		}
-	}
-}
-
 void moveRot (float rot, float speed)
 {
   BaseLeftRear.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
@@ -260,173 +202,61 @@ void inertial_drive(double target, double speed) {
 		}
 }
 }
-/* Teporarily gone
 
-// PID controllers for the left and right side of the base
-DualPidController base_left(
-  &BaseLeftRear,
-  &BaseLeftFront,
-  2.25, // Kp
-  1.1, // Ki
-  0.7, // Kd
-  BASE_DT,
-  BASE_INTEGRAL_THRESHOLD
-);
-DualPidController base_right(
-  &BaseRightRear,
-  &BaseRightFront,
-  2.25, // Kp
-  1.1, // Ki
-  0.7, // Kd
-  BASE_DT,
-  BASE_INTEGRAL_THRESHOLD
-);
+void inertialDrive(double target, double speed){
+	double lastError = 0;
+	double errorD = 0;
+	double _integral = 0;
+	double _derivative = 0;
+	double leftPos = 0;
+	double rightPos = 0;
+	double avg = 0;
+	double pwrD = 0;
 
-// Control variable to set whether or not the base PIDs should update
-volatile bool tick_pids = false;
+  BaseRightRear.setPosition(0, degrees); 
+  BaseLeftRear.setPosition(0, degrees);
 
-// Filter to track our rotation
-Kalman1D heading_filter(1.0, 0.50, 0.0, 0.0);
+	double h0 = get_rotation();
+	double pwrT = 0;
+	double errorT = 0;
+	double _tDerivative = 0;
+	double _tIntegral = 0;
+	double lastErrorT = 0;
 
-// Mutual exclusions structs for thread safety
-mutex chasis_mtx;
-mutex heading_mtx;
+  //reset motor encoders
 
-// Hit the brakes without checking whether or not the PIDs are running
-void brake_unchecked() {
-  BaseLeftRear.stop(brakeType::brake);
-  BaseLeftFront.stop(brakeType::brake);
-  BaseRightRear.stop(brakeType::brake);
-  BaseRightFront.stop(brakeType::brake);
+	while(true){
+		leftPos = BaseLeftRear.position(degrees);
+		rightPos = BaseRightRear.position(degrees);
+		avg = (leftPos + rightPos) / 2;
+		errorD = target/TURNS_TO_INCHES*360 - avg;
+
+    Controller1.Screen.setCursor(1, 1); 
+    Controller1.Screen.print(target/TURNS_TO_INCHES*360); 
+
+		_integral += errorD;
+		_derivative = errorD - lastError;
+		pwrD = (m_kp * errorD) + (m_ki * _integral) + (m_kd * _derivative);
+
+		errorT = h0 - get_rotation();
+		_tIntegral += errorT;
+		_tDerivative = errorT - lastErrorT;
+		//pwrT = (.1 * errorT) + (0 * _tIntegral) + (.2 * _tDerivative);
+		//drive power is limited to allow turn power to have an effect
+		if(pwrD > speed) pwrD = speed;
+		else if(pwrD < -speed) pwrD = -speed; 
+    BaseLeftFront.spin(vex::directionType::fwd, pwrD + pwrT, vex::velocityUnits::pct);
+    BaseLeftRear.spin(vex::directionType::fwd, pwrD + pwrT, vex::velocityUnits::pct);
+    BaseRightFront.spin(vex::directionType::fwd, pwrD - pwrT, vex::velocityUnits::pct);
+    BaseRightRear.spin(vex::directionType::fwd, pwrD - pwrT, vex::velocityUnits::pct);
+		lastError = errorD;
+		lastErrorT = errorT;
+		if(std::abs(errorD) <= 5){
+      BaseLeftFront.stop(vex::brakeType::brake);
+      BaseRightFront.stop(vex::brakeType::brake);
+      BaseRightRear.stop(vex::brakeType::brake);
+      BaseLeftRear.stop(vex::brakeType::brake);
+			break;
+		}
+	}
 }
-
-// Set the PID constraints
-void set_constraints(double min_veloc, double max_veloc, double max_accel) {
-  chasis_mtx.lock();
-  // Start with no turn correction
-  base_left.set_adjustment(0);
-  base_right.set_adjustment(0);
-  // Apply new constraints
-  base_left.set_constraints(min_veloc, max_veloc, max_accel);
-  base_right.set_constraints(min_veloc, max_veloc, max_accel);
-  chasis_mtx.unlock();
-}
-
-void initialize() {
-  // Set the PID constraints
-  set_constraints(BASE_MIN_V, 100, BASE_MAX_A);
-  
-  // Thread to update the PIDs
-  thread([]() {
-    double last_tick_pids = false;
-    long ticks = 0;
-    while(true) {
-      chasis_mtx.lock();
-
-      // If we should tick the PIDs, then update them
-      if (tick_pids) {
-        base_left.update();
-        base_right.update();
-      }
-      // If we just turned off the PIDs, then hit the brakes
-      else if (last_tick_pids) {
-        brake_unchecked();
-      }
-
-      // Keep track of whether we updated the last tick
-      last_tick_pids = tick_pids;
-
-      chasis_mtx.unlock();
-      
-      ticks += 1;
-      wait(BASE_DT, sec);
-    }
-  })
-  // Allow the process to run in the background
-  .detach();
-
-  // Start a daemon to update the filter in the background
-  thread([]() {
-    // Set our initial rotation to 0 regardless of the position of the robot
-    Inertial.setRotation(0, degrees);
-    
-    while(true) {
-      // Obtain our current rotation according to the sensor
-      double measured_rotation = Inertial.rotation();
-
-      // Update the filter
-      heading_mtx.lock();
-      heading_filter.update(measured_rotation);
-      heading_mtx.unlock();
-
-      // Wait 5ms before the next update
-      wait(5, msec);
-    }
-  })
-  // Allow the process to run in the background
-  .detach();
-}
-
-// Get the current rotation of the robot by querying the state of the filter
-double get_rotation() {
-  heading_mtx.lock();
-  double rotation = heading_filter.state;
-  heading_mtx.unlock();
-  return rotation;
-}
-
-// Stop running the base PIDs
-void unlock() {
-  chasis_mtx.lock();
-  tick_pids = false;
-  chasis_mtx.unlock();
-}
-
-// Apply the brakes after disabling the PIDs
-void apply_brake() {
-  unlock();
-  brake_unchecked();
-}
-
-// Move a relative distance
-void move_rel(double left, double right, double max_time) {
-  // Update the PIDs' target values
-  chasis_mtx.lock();
-  base_left.set_rel_target(left);
-  base_right.set_rel_target(right);
-  tick_pids = true;
-  chasis_mtx.unlock();
-
-  double start_time = cts();
-  long ticks = 0;
-
-  // Run until we reach our target or hit our time out
-  while(max_time == 0 || cts() - start_time < max_time) {
-    chasis_mtx.lock();
-
-    //if (ticks % 20 == 0) {
-      Brain.Screen.clearScreen();
-      Brain.Screen.setCursor(1, 1);
-      Brain.Screen.print("%s, %s", base_left.is_done() ? "true" : "false", base_right.is_done() ? "true" : "false");
-    //}
-
-    // If we reached our target, then hit the brakes
-    if (base_left.is_done() && base_right.is_done()) {
-      brake_unchecked();
-      tick_pids = false;
-      chasis_mtx.unlock();
-      break;
-    }
-
-    chasis_mtx.unlock();
-
-    wait(20, msec);
-    ticks += 1;
-  }
-}
-
-// Hold the robot in its current position
-void lock() {
-  move_rel(0, 0);
-}
-*/

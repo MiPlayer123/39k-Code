@@ -8,7 +8,6 @@ extern motor BaseLeftRear;
 extern motor BaseLeftFront;
 extern motor BaseRightRear;
 extern motor BaseRightFront;
-extern motor FrontMogo;
 extern motor RearMogo;
 extern motor Bar;
 extern motor Claw;
@@ -17,9 +16,11 @@ extern inertial Inertial;
 extern bumper Red;
 extern bumper Blue;
 extern controller Controller2;
-extern motor Bar2;
 extern bumper leftRush;
 extern bumper rightRush;
+extern motor Intake;
+extern rotation MogoRot;
+extern rotation BarRot;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

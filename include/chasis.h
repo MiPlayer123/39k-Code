@@ -24,10 +24,13 @@ void turn_absolute_inertial(double target);
 // Turns the robot a relative number of degrees.
 void turn_rel_inertial(double target);
 
-void inertialDrive(double target, double speed);
+//PID drive with inertial correction
+void inertial_drive(double target, double speed);
 
+//Move given rotations
 void moveRot (float rot, float speed);
 
-void inertial_drive(double target, double speed);
+//Trial inertial drive
+void inertialDrive(double target, double speed); 
 
 #endif
