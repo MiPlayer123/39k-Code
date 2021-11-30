@@ -75,7 +75,9 @@ void mogoPos(int pos, bool daemon){
         mogoThread(posUp);
         break;
       case 2: //Ring height
-        mogoThread(posRing);
+        thread([]() {
+          setMogo(102);
+        }).detach();
         break;
       case 3: //All the way down
         mogoThread(0);

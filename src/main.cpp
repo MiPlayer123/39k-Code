@@ -28,6 +28,9 @@
 // Intake               motor         4               
 // MogoRot              rotation      16              
 // BarRot               rotation      20              
+// SOdom                rotation      3               
+// ROdom                rotation      5               
+// LOdom                rotation      6               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -35,10 +38,17 @@
 #include "kalman.h"
 #include "control.h"
 #include "chasis.h"
+#include "DrawField.h"
 
 using namespace vex;
 
+task odometryTask;
+task drawFieldTask;
+
 void auton() {
+
+  task odometryTask(positionTracking);
+  task drawFieldTask(drawField);
 
   if(is_skills()){
     //mogoSpin(-1.28); //Lift alliance goal
@@ -379,6 +389,21 @@ int main() {
   Inertial.calibrate();
   while(Inertial.isCalibrating()) {
     wait(100, msec);
+  }
+
+  //imagine the field is a unit circle
+
+  //The starting x and y coordinates of the bot (INCHES)
+  //These distances are relative to some point (0,0) on the field
+
+  if(is_skills()){
+    THETA_START = M_PI/2; 
+    X_START = 56.5; //19.1
+    Y_START = 8.5; //8.5
+  } else{
+    THETA_START = M_PI; 
+    X_START = 0; //19.1
+    Y_START = 0; //8.5
   }
 
   // Print to the screen when we're done calibrating

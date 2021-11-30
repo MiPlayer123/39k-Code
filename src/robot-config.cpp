@@ -26,6 +26,9 @@ bumper rightRush = bumper(Brain.ThreeWirePort.D);
 motor Intake = motor(PORT4, ratio6_1, false);
 rotation MogoRot = rotation(PORT16, false);
 rotation BarRot = rotation(PORT20, false);
+rotation SOdom = rotation(PORT3, false);
+rotation ROdom = rotation(PORT5, false);
+rotation LOdom = rotation(PORT6, false);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

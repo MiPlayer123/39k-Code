@@ -30,6 +30,9 @@ void inertial_drive(double target, double speed);
 //Move given rotations
 void moveRot (float rot, float speed);
 
+//Drive to point using odom position
+void driveTo(double xTarget, double yTarget, double targetAngle, double speed);
+
 //Trial inertial drive
 void inertialDrive(double target, double speed); 
 

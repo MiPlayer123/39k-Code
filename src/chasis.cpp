@@ -1,4 +1,5 @@
 #include "chasis.h"
+#include "odometry.h"
 
 //For PID turns
 #define TURN_KP 0.05
@@ -201,6 +202,108 @@ void inertial_drive(double target, double speed) {
 			break;
 		}
 }
+}
+
+//Drive to position on field based on odom
+
+//target coords to drive to
+double xTargetLocation = xPosGlobal;
+double yTargetLocation = yPosGlobal;
+double targetFacingAngle = 0;
+
+//distances between robot's current position and the target position
+double xDistToTarget = 0;
+double yDistToTarget = 0;
+
+//angle of hypotenuse of X and Y distances
+double hypotenuseAngle = 0;
+
+double robotRelativeAngle = 0;
+
+double driveError = 0;
+
+void driveTo(double xTarget, double yTarget, double targetAngle, double speed) {
+
+  xDistToTarget = xTargetLocation - xPosGlobal;
+  yDistToTarget = yTargetLocation - yPosGlobal;
+
+  //Angle of hypotenuse
+  hypotenuseAngle = atan2(yDistToTarget, xDistToTarget);
+
+  if(hypotenuseAngle < 0) {
+    hypotenuseAngle += 2 * M_PI;
+  }
+
+  //The angle the robot needs to travel relative to its forward direction in order to go toward the target
+  robotRelativeAngle = hypotenuseAngle - currentAbsoluteOrientation + M_PI_2;
+
+  if(robotRelativeAngle > 2 * M_PI) {
+    robotRelativeAngle -= 2 * M_PI;
+  }
+  else if(robotRelativeAngle < 0) {
+    robotRelativeAngle += 2 * M_PI;
+  }
+
+  double turnAngle = hypotenuseAngle*180/M_PI; //Convert to degrees
+  turn_absolute_inertial(turnAngle); //Turn to face the point
+
+  //Constrianed Inertial PID for traveling the distance
+      
+  double angle = get_rotation();
+
+  // Accumulated error
+  double integral_c = 0;
+  double last_error;
+  double derivative;
+  double integral;
+
+  while (true) {
+
+    // Calculate the error
+    double error_c = angle - get_rotation();
+    
+    driveError = sqrt(pow((xPosGlobal - xTargetLocation), 2) + pow((yPosGlobal - yTargetLocation), 2));
+
+    // Get the turn output
+    double raw_output_correct = (TURN_KP * error_c + 0.1 * integral_c); // in/s
+    integral_c += error_c * BASE_DT;
+
+    if (fabs(driveError) > integral_threshold) {
+      integral = 0;
+      derivative = 0;
+    } else {
+      integral += driveError * BASE_DT;
+      derivative = (driveError - last_error) / BASE_DT;
+    }
+    
+    double raw_output = kp * driveError + ki * integral + kd * derivative; // in/s
+    last_error = driveError;
+
+    // This is the extent to which we want to turn; a low value means no turns
+    double factor = 0.1 + fabs(error_c) / 45;
+    raw_output_correct *= factor; //old error
+    raw_output_correct = error_c*kp_c; //new ange error
+    //double correct_output = 2 * clamp(raw_output_correct, -speed, speed);
+
+    if(raw_output > speed) raw_output = speed;
+		else if(raw_output < -speed) raw_output = -speed; 
+    BaseLeftFront.spin(vex::directionType::fwd, raw_output + raw_output_correct, vex::velocityUnits::pct);
+    BaseLeftRear.spin(vex::directionType::fwd, raw_output + raw_output_correct, vex::velocityUnits::pct);
+    BaseRightFront.spin(vex::directionType::fwd, raw_output - raw_output_correct, vex::velocityUnits::pct);
+    BaseRightRear.spin(vex::directionType::fwd, raw_output - raw_output_correct, vex::velocityUnits::pct);
+
+		if(std::abs(driveError) <= .5){
+		  BaseLeftFront.stop(vex::brakeType::brake);
+      BaseRightFront.stop(vex::brakeType::brake);
+      BaseRightRear.stop(vex::brakeType::brake);
+      BaseLeftRear.stop(vex::brakeType::brake);
+			break;
+		}
+  }
+
+  if(targetAngle!=-1){ //If we want to face a certain angle
+    turn_absolute_inertial(targetAngle);
+  }
 }
 
 void inertialDrive(double target, double speed){
