@@ -385,6 +385,11 @@ int main() {
   // Initialize vex's internal components
   vexcodeInit();
 
+  //Set encoders to 0
+  ROdom.setPosition(0, deg);
+  LOdom.setPosition(0, deg);
+  SOdom.setPosition(0, deg);
+
   // Calibrate the inertial sensor, and wait for it to finish
   Inertial.calibrate();
   while(Inertial.isCalibrating()) {
@@ -395,7 +400,6 @@ int main() {
 
   //The starting x and y coordinates of the bot (INCHES)
   //These distances are relative to some point (0,0) on the field
-
   if(is_skills()){
     THETA_START = M_PI/2; 
     X_START = 56.5; //19.1
