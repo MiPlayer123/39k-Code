@@ -24,6 +24,7 @@ extern rotation BarRot;
 extern rotation SOdom;
 extern rotation ROdom;
 extern rotation LOdom;
+extern gps GPS;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

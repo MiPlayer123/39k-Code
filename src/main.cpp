@@ -1,3 +1,129 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// BaseLeftRear         motor         1               
+// BaseLeftFront        motor         2               
+// BaseRightRear        motor         11              
+// BaseRightFront       motor         19              
+// RearMogo             motor         14              
+// Bar                  motor         9               
+// Claw                 motor         17              
+// Skills               bumper        H               
+// Inertial             inertial      15              
+// Red                  bumper        A               
+// Blue                 bumper        B               
+// Controller2          controller                    
+// leftRush             bumper        C               
+// rightRush            bumper        D               
+// Intake               motor         4               
+// MogoRot              rotation      18              
+// BarRot               rotation      16              
+// SOdom                rotation      7               
+// ROdom                rotation      5               
+// LOdom                rotation      6               
+// GPS                  gps           3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// BaseLeftRear         motor         1               
+// BaseLeftFront        motor         2               
+// BaseRightRear        motor         11              
+// BaseRightFront       motor         19              
+// RearMogo             motor         14              
+// Bar                  motor         9               
+// Claw                 motor         17              
+// Skills               bumper        H               
+// Inertial             inertial      15              
+// Red                  bumper        A               
+// Blue                 bumper        B               
+// Controller2          controller                    
+// leftRush             bumper        C               
+// rightRush            bumper        D               
+// Intake               motor         4               
+// MogoRot              rotation      18              
+// BarRot               rotation      16              
+// SOdom                rotation      7               
+// ROdom                rotation      5               
+// LOdom                rotation      6               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// BaseLeftRear         motor         1               
+// BaseLeftFront        motor         2               
+// BaseRightRear        motor         11              
+// BaseRightFront       motor         19              
+// RearMogo             motor         14              
+// Bar                  motor         9               
+// Claw                 motor         17              
+// Skills               bumper        H               
+// Inertial             inertial      15              
+// Red                  bumper        A               
+// Blue                 bumper        B               
+// Controller2          controller                    
+// leftRush             bumper        C               
+// rightRush            bumper        D               
+// Intake               motor         4               
+// MogoRot              rotation      18              
+// BarRot               rotation      16              
+// SOdom                rotation      3               
+// ROdom                rotation      5               
+// LOdom                rotation      6               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// BaseLeftRear         motor         1               
+// BaseLeftFront        motor         2               
+// BaseRightRear        motor         11              
+// BaseRightFront       motor         19              
+// RearMogo             motor         14              
+// Bar                  motor         9               
+// Claw                 motor         17              
+// Skills               bumper        H               
+// Inertial             inertial      15              
+// Red                  bumper        A               
+// Blue                 bumper        B               
+// Controller2          controller                    
+// leftRush             bumper        C               
+// rightRush            bumper        D               
+// Intake               motor         4               
+// MogoRot              rotation      18              
+// BarRot               rotation      20              
+// SOdom                rotation      3               
+// ROdom                rotation      5               
+// LOdom                rotation      6               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// BaseLeftRear         motor         1               
+// BaseLeftFront        motor         2               
+// BaseRightRear        motor         11              
+// BaseRightFront       motor         19              
+// RearMogo             motor         14              
+// Bar                  motor         9               
+// Claw                 motor         17              
+// Skills               bumper        H               
+// Inertial             inertial      15              
+// Red                  bumper        A               
+// Blue                 bumper        B               
+// Controller2          controller                    
+// leftRush             bumper        C               
+// rightRush            bumper        D               
+// Intake               motor         4               
+// MogoRot              rotation      16              
+// BarRot               rotation      20              
+// SOdom                rotation      3               
+// ROdom                rotation      5               
+// LOdom                rotation      6               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -39,6 +165,7 @@
 #include "control.h"
 #include "chasis.h"
 #include "DrawField.h"
+#include "odometry.h"
 
 using namespace vex;
 
@@ -268,7 +395,7 @@ void auton() {
     inertial_drive(-45, 50);
     */
     //inertial_drive(72, 60);
-    closeClaw();
+    setBar(20);
   }
 } 
 
@@ -342,7 +469,7 @@ void usercontrol() {
     if (r1_pressing) { //&& BarRot.position(deg)>=0
       Bar.spin(fwd,100,pct);
     }
-    else if (r2_pressing ) { //&& BarRot.position(deg)<=134
+    else if (r2_pressing) { //&& BarRot.position(deg)<=134
       Bar.spin(reverse,100,pct);
     }
 
@@ -350,10 +477,10 @@ void usercontrol() {
       Bar.stop(hold);
     }
 
-    if (Controller1.ButtonUp.pressing()) {
+    if (Controller1.ButtonUp.pressing()) { // && (MogoRot.position(deg)<194 || MogoRot.position(deg)>300)
       RearMogo.spin(fwd,60,pct);
     }
-    else if (Controller1.ButtonDown.pressing()) {
+    else if (Controller1.ButtonDown.pressing()) { // && MogoRot.position(deg)>0
       RearMogo.spin(reverse,60,pct);
     } else if(Controller1.ButtonLeft.pressing()){
       //Drop mogo down
@@ -400,6 +527,7 @@ int main() {
 
   //The starting x and y coordinates of the bot (INCHES)
   //These distances are relative to some point (0,0) on the field
+  /*
   if(is_skills()){
     THETA_START = M_PI/2; 
     X_START = 56.5; //19.1
@@ -409,6 +537,10 @@ int main() {
     X_START = 0; //19.1
     Y_START = 0; //8.5
   }
+  THETA_START = M_PI; 
+  X_START = 0; //19.1
+  Y_START = 0; //8.5
+  */
 
   // Print to the screen when we're done calibrating
   Brain.Screen.setCursor(2, 1);
@@ -419,6 +551,10 @@ int main() {
 
   Claw.setPosition(0, degrees);
   Bar.setPosition(0, deg);
+  BaseLeftRear.setPosition(0, deg);
+  BaseRightRear.setPosition(0, deg);
+
+  GPS.setOrigin(-1800, -1800);
 
   Competition.autonomous(auton);
   Competition.drivercontrol(usercontrol);

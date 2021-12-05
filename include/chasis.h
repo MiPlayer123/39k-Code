@@ -11,6 +11,9 @@
 #define BASE_MAX_V 45 // in/s
 #define BASE_MAX_A (BASE_MAX_V / 0.1) // in/s/s
 
+extern double xPos;
+extern double yPos;
+
 // Initialize the chasis. Must be called once and only once at the start of the program.
 void initialize();
 

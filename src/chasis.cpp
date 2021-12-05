@@ -47,6 +47,11 @@ void initialize() {
   })
   // Allow the process to run in the background
   .detach();
+
+  thread([]() {
+    xPos = GPS.xPosition();
+    yPos = GPS.yPosition();
+  }).detach();
 }
 
 // Get the current rotation of the robot by querying the state of the filter

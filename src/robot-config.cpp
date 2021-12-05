@@ -24,11 +24,12 @@ controller Controller2 = controller(partner);
 bumper leftRush = bumper(Brain.ThreeWirePort.C);
 bumper rightRush = bumper(Brain.ThreeWirePort.D);
 motor Intake = motor(PORT4, ratio6_1, false);
-rotation MogoRot = rotation(PORT16, false);
-rotation BarRot = rotation(PORT20, false);
-rotation SOdom = rotation(PORT3, false);
+rotation MogoRot = rotation(PORT18, false);
+rotation BarRot = rotation(PORT16, false);
+rotation SOdom = rotation(PORT7, false);
 rotation ROdom = rotation(PORT5, false);
 rotation LOdom = rotation(PORT6, false);
+gps GPS = gps(PORT3, 0.00, 0.00, mm, 180);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

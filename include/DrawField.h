@@ -1,5 +1,6 @@
 #include "vex.h"
 #include "odometry.h"
+#include "chasis.h"
 
 void drawGoal(int x, int y);
 

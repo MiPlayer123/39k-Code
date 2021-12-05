@@ -80,9 +80,13 @@ int drawField () {
     lineOffset1 = sqrt(2) * robotSize * cos(currentAbsoluteOrientation + M_PI_4);
     lineOffset2 = sqrt(2) * robotSize * cos(currentAbsoluteOrientation - M_PI_4);
 
+    //Odom
     robotX = xPosGlobal * 1.67;
     robotY = -yPosGlobal * 1.67;
 
+    //GPS
+    //robotX = xPos * 1.67;
+    //robotY = -yPos * 1.67;
 
     //Draw the Robot
     Brain.Screen.setPenColor(black);
@@ -108,10 +112,10 @@ int drawField () {
     Brain.Screen.print("Orientation: %f", currentAbsoluteOrientation * 180 / M_PI);
 
     Brain.Screen.setCursor(4, 1);
-    Brain.Screen.print("X: %f", xPosGlobal);
+    Brain.Screen.print("X: %f", xPosGlobal); //xPos
 
     Brain.Screen.setCursor(6, 1);
-    Brain.Screen.print("Y: %f", yPosGlobal);
+    Brain.Screen.print("Y: %f", yPosGlobal); //yPos
 
     task::sleep(20);
   }

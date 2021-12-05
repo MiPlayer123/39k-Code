@@ -6,7 +6,7 @@ using namespace vex;
 //Voids for auton 
 
 void setBar(double degs){
-  float kP = 1;
+  float kP = 5;
   while(true){
     float error = degs - BarRot.position(deg);
     float mtrpwr = error*kP;

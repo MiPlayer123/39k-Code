@@ -4,7 +4,7 @@
 
 //CONSTANTS / Hard-Coded Values
 //Radius of tracking wheels in inches
-double WHEEL_RADIUS = 1.379; //was 1.379 //1.43
+double WHEEL_RADIUS = 2; //was 1.379 //1.43
 
 /*
 //Starting angle (relative to field) (RADIANS)
@@ -17,10 +17,14 @@ double X_START = 56.5; //19.1
 double Y_START = 8.5; //8.5
 */
 
+double  THETA_START = M_PI; 
+double  X_START = 0; //19.1
+double  Y_START = 0; //8.5
+
 //Distances of tracking wheels from tracking center (INCHES)
-double LTrackRadius = 6.8335; //was 6.87
-double RTrackRadius = 6.8335; //6.8335
-double STrackRadius = 5.85;
+double LTrackRadius = 8; //was 6.87
+double RTrackRadius = 8; //6.8335
+double STrackRadius = 3;
 
 //Calculated Values (every loop)
 //Angles (DEGREES) *NEEDS TO BE CONVERTED TO RADIANS FOR MATH*
@@ -72,8 +76,8 @@ int positionTracking() {
   while(1) {
     //Get encoder values (DEGREES)
     
-    LPos = ROdom.position(deg);
-    RPos = LOdom.position(deg);
+    LPos = BaseLeftRear.position(deg);//ROdom.position(deg);
+    RPos = BaseRightRear.position(deg);//LOdom.position(deg);
     SPos = SOdom.position(deg);
 
     //Calculate distance traveled by tracking each wheel (INCHES)
