@@ -57,13 +57,13 @@ void auton() {
     inertial_drive(-8, 30);
     mogoPos(2, false); //Grab first red
     turn_absolute_inertial(60);
-    inertial_drive(30.5, 80);
+    inertial_drive(30.5, 70);
     turn_absolute_inertial(125);
     inertial_drive(24, 70);
     closeClaw(); //grab yellow
     setBar(105);
     spinIntake();
-    inertial_drive(51.5, 70);
+    inertial_drive(51.5, 60);
     turn_absolute_inertial(95);
     inertial_drive(7, 30);
     stopIntake();
@@ -72,7 +72,7 @@ void auton() {
     openClaw(); //Score yellow
     turn_absolute_inertial(0);
     setBar(4);
-    inertial_drive(23, 80);
+    inertial_drive(23, 75);
     turn_absolute_inertial(0);
     mogoPos(3, false); //Drop red
     inertial_drive(20, 70);
@@ -80,56 +80,53 @@ void auton() {
     moveRot(-1, 30);
     setBar(20);
     turn_absolute_inertial(37);
-    inertial_drive(-90, 80);
+    inertial_drive(-90, 70);
     turn_absolute_inertial(80); //push Yellow tall
-    inertial_drive(-23, 80);
+    inertial_drive(-23, 70);
     inertial_drive(3, 50);
     turn_absolute_inertial(0);
     mogoRotation(.42);
-    startBar(70);
-    inertial_drive(24, 80);
-    stopBar();
     setBar(95);
+    inertial_drive(24, 80);
     turn_absolute_inertial(-90);
     moveRot(3.7, 50);
     openClaw(); //Score Blue
     turn_absolute_inertial(-0);
     mogoPos(3, false);
-    vex::task::sleep(100);
-    startBar(-50);
+    vex::task::sleep(250);
     inertial_drive(-24, 70);
-    stopBar();
     turn_absolute_inertial(-0);
     setBar(4);
     inertial_drive(-24, 70);
     turn_absolute_inertial(-0);
+    //inertial_drive(-1, 70);
     mogoPos(2, false); //Grab 2nd Blue
-    inertial_drive(14, 80);
+    inertial_drive(14, 70);
     turn_absolute_inertial(90);
-    inertial_drive(24, 80);
+    //turn_absolute_inertial(63);
+    inertial_drive(24, 70);
     closeClaw(); //Grab 3rd Yellow
     setBar(95);
     turn_absolute_inertial(63);
     spinIntake();
-    inertial_drive(50, 70);
+    inertial_drive(50, 80);
     openClaw(); //Score 3rd yellow
-    startBar(-60);
-    inertial_drive(-25.3, 85);
+    startBar(-70);
+    inertial_drive(-25.3, 70);
     turn_absolute_inertial(90);
     stopBar();
     setBar(4);
     stopIntake();
-    inertial_drive(34, 50);
+    inertial_drive(34, 80);
     closeClaw(); //Grab 2nd red
+    inertial_drive(-30, 80);
     setBar(20);
-    inertial_drive(-30, 60);
-    startBar(80);
     turn_absolute_inertial(287);
     mogoPos(3, false); //Drop 2nd blue
-    stopBar();
     setBar(90);
     inertial_drive(67, 90);
     openClaw(); //Score red (220+)
+    moveRot(3, -100);
   } 
   
   else if (Red.pressing()){
