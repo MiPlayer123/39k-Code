@@ -21,10 +21,11 @@ extern bumper rightRush;
 extern motor Intake;
 extern rotation MogoRot;
 extern rotation BarRot;
-extern rotation SOdom;
 extern rotation ROdom;
 extern rotation LOdom;
 extern gps GPS;
+extern bumper Carry;
+extern rotation SOdom;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

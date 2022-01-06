@@ -19,6 +19,12 @@ void mogoThread(double degs);
 
 void mogoPos(int pos, bool daemon);
 
+void startBar(float speed);
+
+void stopBar();
+
+void mogoRotation(float rot);
+
 void spinIntake();
 
 void stopIntake();

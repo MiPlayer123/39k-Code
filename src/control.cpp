@@ -6,12 +6,20 @@ using namespace vex;
 //Voids for auton 
 
 void setBar(double degs){
-  float kP = 5;
+  float kP = 7;
+  float error;
+  float mtrpwr;
   while(true){
-    float error = degs - BarRot.position(deg);
-    float mtrpwr = error*kP;
-
-    Bar.spin(fwd, mtrpwr, pct);
+    if(BarRot.position(deg)>degs){
+      error = BarRot.position(deg) - degs; 
+      mtrpwr = error*kP;
+      Bar.spin(reverse, mtrpwr, pct);
+    }
+    else {
+      error = degs - BarRot.position(deg);
+      mtrpwr = error*kP;
+      Bar.spin(fwd, mtrpwr, pct);
+    }
     if (error <=1){
       Bar.stop(hold);
       break;
@@ -44,16 +52,23 @@ void barT(double t){
 
 void setMogo(double degs){
 float kP = 1;
+  float error;
+  float mtrpwr;
   while(true){
-    float error = degs - MogoRot.position(deg);
-    float mtrpwr = error*kP;
-
-    RearMogo.spin(fwd, mtrpwr, pct);
+    if(MogoRot.position(deg)>degs){
+      error = MogoRot.position(deg) - degs; 
+      mtrpwr = error*kP;
+      RearMogo.spin(reverse, mtrpwr, pct);
+    }
+    else {
+      error = degs - MogoRot.position(deg);
+      mtrpwr = error*kP;
+      RearMogo.spin(fwd, mtrpwr, pct);
+    }
     if (error <=1){
       RearMogo.stop(hold);
       break;
     }
-
   }
 }
 
@@ -92,10 +107,22 @@ void mogoPos(int pos, bool daemon){
         setMogo(posRing);
         break;
       case 3: //All the way down
-        setMogo(0);
+        setMogo(1);
         break;
     }
   }
+}
+
+void startBar(float speed){
+  Bar.spin(fwd,speed, pct);
+}
+
+void stopBar(){
+  Bar.stop(hold);
+}
+
+void mogoRotation(float rot){
+  RearMogo.rotateFor(rot, rotationUnits::rev, 100, velocityUnits::pct, true);
 }
 
 void spinIntake(){
@@ -107,11 +134,11 @@ void stopIntake(){
 }
 
 void openClaw(){
-  clawSpinT(-.6);
+  clawSpinT(-.4);
 }
 
 void closeClaw(){
-  clawSpinT(.6);
+  clawSpinT(.5);
 }
 
 void clawSpinT(float t){

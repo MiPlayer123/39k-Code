@@ -10,11 +10,11 @@
 #define TURN_MIN_V 3
 
 //For main inertial_drive
-#define   kp 10 //21.1 // Ki
-#define   ki .8 //1.1 // Ki
-#define   kd  0.7 // Kd
+#define   kp 8.7 //10, 21.1 
+#define   ki .5 //.8, 1.1
+#define   kd .45 //.7
 #define integral_threshold 10
-#define kp_c .2
+#define kp_c .45 //.2
 
 //For other inertialDrive()
 #define   m_kp 2 // Kp
@@ -47,11 +47,13 @@ void initialize() {
   })
   // Allow the process to run in the background
   .detach();
-
+  
+  /*
   thread([]() {
-    xPos = GPS.xPosition();
-    yPos = GPS.yPosition();
+     xPos = GPS.xPosition();
+     yPos = GPS.yPosition();
   }).detach();
+  */
 }
 
 // Get the current rotation of the robot by querying the state of the filter
@@ -192,19 +194,38 @@ void inertial_drive(double target, double speed) {
     raw_output_correct = error_c*kp_c; //new ange error
     //double correct_output = 2 * clamp(raw_output_correct, -speed, speed);
 
-    if(raw_output > speed) raw_output = speed;
-		else if(raw_output < -speed) raw_output = -speed; 
-    BaseLeftFront.spin(vex::directionType::fwd, raw_output + raw_output_correct, vex::velocityUnits::pct);
-    BaseLeftRear.spin(vex::directionType::fwd, raw_output + raw_output_correct, vex::velocityUnits::pct);
-    BaseRightFront.spin(vex::directionType::fwd, raw_output - raw_output_correct, vex::velocityUnits::pct);
-    BaseRightRear.spin(vex::directionType::fwd, raw_output - raw_output_correct, vex::velocityUnits::pct);
+    if(raw_output > speed) raw_output = speed; //Limit speed
+     else if(raw_output < -speed) raw_output = -speed; 
+    
+     //Normal speed
+     if(target!=0){ //fwd correct
+      BaseLeftFront.spin(vex::directionType::fwd, raw_output + raw_output_correct, vex::velocityUnits::pct);
+      BaseLeftRear.spin(vex::directionType::fwd, raw_output + raw_output_correct, vex::velocityUnits::pct);
+      BaseRightFront.spin(vex::directionType::fwd, raw_output - raw_output_correct, vex::velocityUnits::pct);
+      BaseRightRear.spin(vex::directionType::fwd, raw_output - raw_output_correct, vex::velocityUnits::pct);
+     }
+     else{ //rev correct
+      BaseLeftFront.spin(vex::directionType::fwd, raw_output + raw_output_correct*0, vex::velocityUnits::pct);
+      BaseLeftRear.spin(vex::directionType::fwd, raw_output + raw_output_correct*0, vex::velocityUnits::pct);
+      BaseRightFront.spin(vex::directionType::fwd, raw_output - raw_output_correct*0, vex::velocityUnits::pct);
+      BaseRightRear.spin(vex::directionType::fwd, raw_output - raw_output_correct*0, vex::velocityUnits::pct);
+     }
 
 		if(std::abs(error) <= .5){
-		  BaseLeftFront.stop(vex::brakeType::brake);
-      BaseRightFront.stop(vex::brakeType::brake);
-      BaseRightRear.stop(vex::brakeType::brake);
-      BaseLeftRear.stop(vex::brakeType::brake);
-			break;
+      if (speed==99){
+        BaseLeftFront.stop(vex::brakeType::coast);
+        BaseRightFront.stop(vex::brakeType::coast);
+        BaseRightRear.stop(vex::brakeType::coast);
+        BaseLeftRear.stop(vex::brakeType::coast);
+        break;
+      }
+      else{
+        BaseLeftFront.stop(vex::brakeType::brake);
+        BaseRightFront.stop(vex::brakeType::brake);
+        BaseRightRear.stop(vex::brakeType::brake);
+        BaseLeftRear.stop(vex::brakeType::brake);
+        break;
+      }
 		}
 }
 }

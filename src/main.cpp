@@ -8,7 +8,7 @@
 // BaseRightFront       motor         19              
 // RearMogo             motor         14              
 // Bar                  motor         9               
-// Claw                 motor         17              
+// Claw                 motor         20              
 // Skills               bumper        H               
 // Inertial             inertial      15              
 // Red                  bumper        A               
@@ -19,145 +19,20 @@
 // Intake               motor         4               
 // MogoRot              rotation      18              
 // BarRot               rotation      16              
-// SOdom                rotation      7               
 // ROdom                rotation      5               
 // LOdom                rotation      6               
 // GPS                  gps           3               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// BaseLeftRear         motor         1               
-// BaseLeftFront        motor         2               
-// BaseRightRear        motor         11              
-// BaseRightFront       motor         19              
-// RearMogo             motor         14              
-// Bar                  motor         9               
-// Claw                 motor         17              
-// Skills               bumper        H               
-// Inertial             inertial      15              
-// Red                  bumper        A               
-// Blue                 bumper        B               
-// Controller2          controller                    
-// leftRush             bumper        C               
-// rightRush            bumper        D               
-// Intake               motor         4               
-// MogoRot              rotation      18              
-// BarRot               rotation      16              
-// SOdom                rotation      7               
-// ROdom                rotation      5               
-// LOdom                rotation      6               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// BaseLeftRear         motor         1               
-// BaseLeftFront        motor         2               
-// BaseRightRear        motor         11              
-// BaseRightFront       motor         19              
-// RearMogo             motor         14              
-// Bar                  motor         9               
-// Claw                 motor         17              
-// Skills               bumper        H               
-// Inertial             inertial      15              
-// Red                  bumper        A               
-// Blue                 bumper        B               
-// Controller2          controller                    
-// leftRush             bumper        C               
-// rightRush            bumper        D               
-// Intake               motor         4               
-// MogoRot              rotation      18              
-// BarRot               rotation      16              
-// SOdom                rotation      3               
-// ROdom                rotation      5               
-// LOdom                rotation      6               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// BaseLeftRear         motor         1               
-// BaseLeftFront        motor         2               
-// BaseRightRear        motor         11              
-// BaseRightFront       motor         19              
-// RearMogo             motor         14              
-// Bar                  motor         9               
-// Claw                 motor         17              
-// Skills               bumper        H               
-// Inertial             inertial      15              
-// Red                  bumper        A               
-// Blue                 bumper        B               
-// Controller2          controller                    
-// leftRush             bumper        C               
-// rightRush            bumper        D               
-// Intake               motor         4               
-// MogoRot              rotation      18              
-// BarRot               rotation      20              
-// SOdom                rotation      3               
-// ROdom                rotation      5               
-// LOdom                rotation      6               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// BaseLeftRear         motor         1               
-// BaseLeftFront        motor         2               
-// BaseRightRear        motor         11              
-// BaseRightFront       motor         19              
-// RearMogo             motor         14              
-// Bar                  motor         9               
-// Claw                 motor         17              
-// Skills               bumper        H               
-// Inertial             inertial      15              
-// Red                  bumper        A               
-// Blue                 bumper        B               
-// Controller2          controller                    
-// leftRush             bumper        C               
-// rightRush            bumper        D               
-// Intake               motor         4               
-// MogoRot              rotation      16              
-// BarRot               rotation      20              
-// SOdom                rotation      3               
-// ROdom                rotation      5               
-// LOdom                rotation      6               
+// Carry                bumper        E               
+// SOdom                rotation      21              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
-/*    Author:       C:\Users\Ian                                              */
+/*    Author:       Mikul & Lily                                              */
 /*    Created:      Thu Sep 10 2020                                           */
-/*    Description:  V5 project                                                */
+/*    Description:  39K project                                               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
-// BaseLeftRear         motor         1               
-// BaseLeftFront        motor         2               
-// BaseRightRear        motor         11              
-// BaseRightFront       motor         19              
-// RearMogo             motor         14              
-// Bar                  motor         9               
-// Claw                 motor         17              
-// Skills               bumper        H               
-// Inertial             inertial      15              
-// Red                  bumper        A               
-// Blue                 bumper        B               
-// Controller2          controller                    
-// leftRush             bumper        C               
-// rightRush            bumper        D               
-// Intake               motor         4               
-// MogoRot              rotation      16              
-// BarRot               rotation      20              
-// SOdom                rotation      3               
-// ROdom                rotation      5               
-// LOdom                rotation      6               
-// ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
 #include "vex_controller.h"
@@ -178,164 +53,100 @@ void auton() {
   task drawFieldTask(drawField);
 
   if(is_skills()){
-    //mogoSpin(-1.28); //Lift alliance goal
-    inertial_drive(-10, 20);
-    //mogoSpin(1);
-    turn_absolute_inertial(90);
-    moveRot(.5,40);
-    turn_absolute_inertial(90);
-    inertial_drive(46, 50);
-    closeClaw(); //Grab yellow
-    setBar(0.2);
-    inertial_drive(-12, 40);
-    turn_absolute_inertial(228);
-    setBar(1.3);
-    inertial_drive(35.4, 40);
-    setBar(-.3);
-    openClaw(); //Score 1st yellow
-    inertial_drive(-5.5, 30);
-    turn_absolute_inertial(144);
-    //turn_absolute_inertial(180);
-    inertial_drive(30, 50);
-    setBar(-1.2);
-    inertial_drive(26, 30);
-    closeClaw(); //grab 2nd yellow
-    setBar(.3);
-    turn_absolute_inertial(270);
-    inertial_drive(15, 50);
-    //spinBar(60);
-    turn_absolute_inertial(303);
-    //stopBar();
-    setBar(.5);
-    inertial_drive(28, 40);
-    setBar(-.2);
-    openClaw(); //Drop 2nd yellow
-    inertial_drive(-5, 40);
-    setBar(-1.2);
-    turn_absolute_inertial(182);
-    //stopBar();
-    inertial_drive(21, 40);
-    closeClaw(); //grab 2nd alliance
-    //inertial_drive(-5, 30);
-    turn_absolute_inertial(90);
-    inertial_drive(75, 70);
-    turn_absolute_inertial(270);
-    //mogoSpin(-1.28);
-    inertial_drive(5, 30);
-    turn_absolute_inertial(225);
-    inertial_drive(-10, 30);  
-    //mogoSpin(1.28);
-    inertial_drive(10, 30);
-    turn_absolute_inertial(315);
-    inertial_drive(60, 70);
-
-    /*
-    mogoSpin(1.28);//grab other alliance rear
-    inertial_drive(25, 30);
+    //Comming soon
+    mogoPos(3, false);
+    inertial_drive(-8, 30);
+    mogoPos(2, false); //Grab first red
+    turn_absolute_inertial(60);
+    inertial_drive(30.5, 70);
+    turn_absolute_inertial(125);
+    inertial_drive(24, 70);
+    closeClaw(); //grab yellow
+    setBar(105);
+    spinIntake();
+    inertial_drive(51.5, 60);
+    turn_absolute_inertial(95);
+    inertial_drive(7, 30);
+    stopIntake();
+    setBar(75);
+    vex::task::sleep(250);
+    openClaw(); //Score yellow
     turn_absolute_inertial(0);
-    inertial_drive(8, 30);
-    turn_absolute_inertial(90);
-    //mikul insert your scoring thing //score 2nd allance
+    setBar(4);
+    inertial_drive(23, 70);
     turn_absolute_inertial(0);
-    inertial_drive(48, 40);
-    closeClaw(); //grab other other alliance goal
-    inertial_drive(-5, 30);
-    turn_absolute_inertial(315);
-    inertial_drive(60, 70); //Push tall goal
-    turn_absolute_inertial(90);
-    mogoSpin(-1.28);
-    inertial_drive(10, 30);
-    mogoSpin(1.28); //drop other alliance goal
+    mogoPos(3, false); //Drop red
+    inertial_drive(20, 70);
+    closeClaw(); //Grab blue
+    moveRot(-1, 30);
+    setBar(20);
+    turn_absolute_inertial(37);
+    inertial_drive(-90, 70);
+    turn_absolute_inertial(80); //push Yellow tall
+    inertial_drive(-23, 70);
+    inertial_drive(3, 50);
     turn_absolute_inertial(0);
-    inertial_drive(15, 30);
-    turn_absolute_inertial(270);
-    */
-    //scoring thing
-    /* 2 neutrals + 2 alliance plat 
-       1 neutral + 2 alliance homezone 
-        220 auton run 
-    */
+    mogoRotation(.42);
+    setBar(95);
+    inertial_drive(24, 70);
+    turn_absolute_inertial(-90);
+    moveRot(3.7, 50);
+    openClaw(); //Score Blue
+    turn_absolute_inertial(-0);
+    mogoPos(3, false);
+    vex::task::sleep(250);
+    inertial_drive(-24, 70);
+    turn_absolute_inertial(-0);
+    setBar(4);
+    inertial_drive(-24, 70);
+    turn_absolute_inertial(-0);
+    //inertial_drive(-1, 70);
+    mogoPos(2, false); //Grab 2nd Blue
+    inertial_drive(14, 70);
+    turn_absolute_inertial(90);
+    //turn_absolute_inertial(63);
+    inertial_drive(24, 70);
+    closeClaw(); //Grab 3rd Yellow
+    setBar(95);
+    turn_absolute_inertial(63);
+    spinIntake();
+    inertial_drive(50, 70);
+    openClaw(); //Score 3rd yellow
+    inertial_drive(-25.3, 70);
+    turn_absolute_inertial(90);
+    setBar(4);
+    stopIntake();
+    inertial_drive(34, 50);
+    closeClaw(); //Grab 2nd red
+    inertial_drive(-30, 60);
+    setBar(20);
+    turn_absolute_inertial(287);
+    mogoPos(3, false); //Drop 2nd blue
+    setBar(90);
+    inertial_drive(67, 80);
+    openClaw(); //Score red (220+)
   } 
   
   else if (Red.pressing()){
     //Right auto
-    turn_absolute_inertial(45);
-    setBar(.6);
-    inertial_drive(15, 50);
-    clawSpinT(-.7); //Drop rings
-    inertial_drive(-5, 50);
-    setBar(-.6);
-    inertial_drive(10, 50);
-    inertial_drive(-1.8, 30);
-    turn_absolute_inertial(-44.2);
-    inertial_drive(58, 80); //Grab Goal
-    moveRot(.01, 10);
-    inertial_drive(5, 30);
+    inertial_drive(45, 99);
     closeClaw();
-    inertial_drive(-60, 70);
-    turn_absolute_inertial(135);
-    inertial_drive(5, 30);
-    setBar(.5);
-    openClaw();
-
-    /* WIP
-    Claw.spin(fwd,20,pct);
-    inertial_drive(48, 98.5);
-    Claw.stop(hold);
-    clawSpinT(.3);
-    inertial_drive(-33, 50);
-    setBar(.2);
-    turn_rel_inertial(-75);
-    inertial_drive(-1.5, 20);
-    mogoSpin(-.8);
-    moveRot(.1,30);
-    RearMogo.spin(fwd,-5,pct);
-    inertial_drive(3, 10);
-    */
-    /*old auto
-    moveRot(2, 30);
-    setBar(.6);
-    moveRot(2.5,30);
-    clawSpinT(-.6);
-    moveRot(-1,30);
-    setBar(-.6);
-    moveRot(5,30);
-    moveRot(-3,30);
-    */
+    inertial_drive(-15, 70);
+    clawSpinT(.1);
+    setBar(15);
+    turn_absolute_inertial(0);
+    inertial_drive(-18.5, 70);
+    turn_absolute_inertial(-90);
+    mogoPos(3, false);
+    inertial_drive(-10, 40);
+    mogoPos(2, false);
+    spinIntake();
+    vex::task::sleep(2000);
+    stopIntake();
   } 
   
   else if (Blue.pressing()){
     //Left auto
-    turn_absolute_inertial(5);
-    moveRot(10,250);
-    spin(&BaseRightRear, 40);
-    spin(&BaseRightFront, 40);
-    spin(&BaseLeftRear, 40);
-    spin(&BaseLeftFront, 40);
-    Claw.spin(fwd,80,pct);
-    vex::task::sleep(700);
-    BaseLeftRear.stop(brake);
-    BaseLeftFront.stop(brake);
-    BaseRightRear.stop(brake);
-    BaseRightFront.stop(brake);
-    Claw.stop(hold);
-    moveRot(-10,70);
-    /*
-    turn_absolute_inertial(0);
-    Claw.spin(fwd,25,pct);
-    inertial_drive(48, 98.5);
-    Claw.stop(hold);
-    clawSpinT(.3);
-    inertial_drive(-37, 50);
-    */
-    //Old Auto
-    /*
-    moveRot(2, 30);
-    setBar(.6);
-    moveRot(2.5,30);
-    clawSpinT(-.6);
-    moveRot(-1,30);
-    setBar(-.6)*/
   } 
   else if(leftRush.pressing()){
     /*
@@ -364,38 +175,36 @@ void auton() {
   }
   else if (rightRush.pressing()) {
     //Right rush
-    //Claw.spin(fwd,25,pct);
-    inertial_drive(48, 98.5);
-    //Claw.stop(hold);
-    closeClaw();
-    inertial_drive(-37, 50);
+
+  } 
+  else if(Carry.pressing()){
+    //WP Mid
+    setBar(40);
+    moveRot(1, 30);
+    openClaw();
+    moveRot(-1, 30);
+    turn_absolute_inertial(-90);
+    inertial_drive(18, 50);
+    turn_absolute_inertial(-180);
+    setBar(3);
+    mogoPos(3, false);
+    inertial_drive(-96, 70);
+    mogoPos(2, false);
+    spinIntake();
+    inertial_drive(25, 30);
+    stopIntake();
+    turn_absolute_inertial(45);
     /*
-    moveRot(10,250);
-    spin(&BaseRightRear, 40);
-    spin(&BaseRightFront, 40);
-    spin(&BaseLeftRear, 40);
-    spin(&BaseLeftFront, 40);
-    Claw.spin(fwd,80,pct);
-    vex::task::sleep(700);
-    BaseLeftRear.stop(brake);
-    BaseLeftFront.stop(brake);
-    BaseRightRear.stop(brake);
-    BaseRightFront.stop(brake);
-    Claw.stop(hold);
-    moveRot(-10,70);
+    inertial_drive(30, 50);
+    closeClaw();
+    inertial_drive(-15, 50);
     */
   }
   else{
+    startBar(70);
+    mogoRotation(.42);
+    stopBar();
     //turn_absolute_inertial(90);
-    /*
-    Claw.spin(fwd,25,pct);
-    inertial_drive(48, 98.5);
-    Claw.stop(hold);
-    clawSpinT(.3);
-    inertial_drive(-45, 50);
-    */
-    //inertial_drive(72, 60);
-    setBar(20);
   }
 } 
 
@@ -462,7 +271,7 @@ void usercontrol() {
         Claw.spin(reverse,100,pct);
     }
     else{
-      Claw.stop(brake);
+      Claw.stop(hold);
     }
     // By default the intakes are off
 
@@ -478,10 +287,10 @@ void usercontrol() {
     }
 
     if (Controller1.ButtonUp.pressing()) { // && (MogoRot.position(deg)<194 || MogoRot.position(deg)>300)
-      RearMogo.spin(fwd,60,pct);
+      RearMogo.spin(fwd,100,pct);
     }
     else if (Controller1.ButtonDown.pressing()) { // && MogoRot.position(deg)>0
-      RearMogo.spin(reverse,60,pct);
+      RearMogo.spin(reverse,50,pct);
     } else if(Controller1.ButtonLeft.pressing()){
       //Drop mogo down
       mogoPos(3, false);
