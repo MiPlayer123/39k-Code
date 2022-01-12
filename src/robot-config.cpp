@@ -28,7 +28,7 @@ rotation MogoRot = rotation(PORT18, false);
 rotation BarRot = rotation(PORT16, false);
 rotation ROdom = rotation(PORT5, false);
 rotation LOdom = rotation(PORT6, false);
-gps GPS = gps(PORT3, 0.00, 0.00, mm, 180);
+gps GPS = gps(PORT13, 152.40, 50.80, mm, 180);
 bumper Carry = bumper(Brain.ThreeWirePort.E);
 rotation SOdom = rotation(PORT21, false);
 

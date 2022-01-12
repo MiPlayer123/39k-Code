@@ -21,7 +21,7 @@
 // BarRot               rotation      16              
 // ROdom                rotation      5               
 // LOdom                rotation      6               
-// GPS                  gps           3               
+// GPS                  gps           13              
 // Carry                bumper        E               
 // SOdom                rotation      21              
 // ---- END VEXCODE CONFIGURED DEVICES ----
@@ -126,7 +126,7 @@ void auton() {
     setBar(90);
     inertial_drive(67, 90);
     openClaw(); //Score red (220+)
-    moveRot(3, -100);
+    moveRot(-3, 100);
   } 
   
   else if (Red.pressing()){
