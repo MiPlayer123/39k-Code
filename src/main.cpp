@@ -2,28 +2,29 @@
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
 // Controller1          controller                    
-// BaseLeftRear         motor         1               
-// BaseLeftFront        motor         2               
-// BaseRightRear        motor         11              
-// BaseRightFront       motor         19              
-// RearMogo             motor         14              
-// Bar                  motor         9               
-// Claw                 motor         20              
+// BaseLeftRear         motor         14              
+// BaseLeftFront        motor         13              
+// BaseRightRear        motor         20              
+// BaseRightFront       motor         3               
+// RearMogo             motor         12              
+// Bar                  motor         1               
+// Claw                 motor         4               
 // Skills               bumper        H               
-// Inertial             inertial      15              
+// Inertial             inertial      19              
 // Red                  bumper        A               
 // Blue                 bumper        B               
 // Controller2          controller                    
 // leftRush             bumper        C               
 // rightRush            bumper        D               
-// Intake               motor         4               
-// MogoRot              rotation      18              
-// BarRot               rotation      16              
-// ROdom                rotation      5               
-// LOdom                rotation      6               
-// GPS                  gps           13              
+// Intake               motor         18              
+// MogoRot              rotation      11              
+// BarRot               rotation      15              
+// ROdom                rotation      7               
+// LOdom                rotation      17              
+// GPS                  gps           16              
 // Carry                bumper        E               
-// SOdom                rotation      21              
+// SOdom                rotation      10              
+// Pn                   digital_out   F               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -46,6 +47,7 @@ using namespace vex;
 
 task odometryTask;
 task drawFieldTask;
+task mogoHeightTask;
 
 void auton() {
 
@@ -72,18 +74,19 @@ void auton() {
     openClaw(); //Score yellow
     turn_absolute_inertial(0);
     setBar(4);
-    inertial_drive(23, 75);
+    inertial_drive(11, 75);
     turn_absolute_inertial(0);
     mogoPos(3, false); //Drop red
-    inertial_drive(20, 70);
+    inertial_drive(32, 70);
     closeClaw(); //Grab blue
     moveRot(-1, 30);
     setBar(20);
-    turn_absolute_inertial(37);
-    inertial_drive(-90, 70);
-    turn_absolute_inertial(80); //push Yellow tall
-    inertial_drive(-23, 70);
-    inertial_drive(3, 50);
+    inertial_drive(-11, 60);
+    turn_absolute_inertial(45); //37
+    inertial_drive(-110, 70);
+    //turn_absolute_inertial(80); //push Yellow tall
+    //inertial_drive(-23, 70);
+    inertial_drive(12, 50); //3
     turn_absolute_inertial(0);
     mogoRotation(.42);
     setBar(95);
@@ -123,7 +126,7 @@ void auton() {
     setBar(20);
     turn_absolute_inertial(287);
     mogoPos(3, false); //Drop 2nd blue
-    setBar(90);
+    setBar(95);
     inertial_drive(67, 90);
     openClaw(); //Score red (220+)
     moveRot(-3, 100);
@@ -243,7 +246,7 @@ void usercontrol() {
     }
 
     // This is equivalent to the code above
-    if (right_speed < 5 && right_speed > -5) {
+    if (right_speed < 10 && right_speed > -10) {
       if (stop_right) {
         BaseRightRear.stop(coast);
         BaseRightFront.stop(coast);
@@ -263,7 +266,7 @@ void usercontrol() {
     bool l2_pressing = Controller1.ButtonL2.pressing();
 
  
-
+    //Nathan
     // If L1 is pressed, claw
     if (l1_pressing) {
       Claw.spin(fwd,100,pct);
@@ -287,15 +290,52 @@ void usercontrol() {
     else {
       Bar.stop(hold);
     }
+    
+
+    /*//Nate
+    // If L1 is pressed, claw
+    if (r1_pressing) {
+      Claw.spin(fwd,100,pct);
+    }
+    // If L2 is pressed, claw
+    else if (l1_pressing) {
+        Claw.spin(reverse,100,pct);
+    }
+    else{
+      Claw.stop(hold);
+    }
+    // By default the intakes are off
+
+    if (l2_pressing) { //&& BarRot.position(deg)>=0
+      Bar.spin(fwd,100,pct);
+    }
+    else if (r2_pressing) { //&& BarRot.position(deg)<=134
+      Bar.spin(reverse,100,pct);
+    }
+
+    else {
+      Bar.stop(hold);
+    }
+    */
+
+    bool lock= false;
 
     if (Controller1.ButtonUp.pressing()) { // && (MogoRot.position(deg)<194 || MogoRot.position(deg)>300)
       RearMogo.spin(fwd,100,pct);
     }
     else if (Controller1.ButtonDown.pressing()) { // && MogoRot.position(deg)>0
-      RearMogo.spin(reverse,50,pct);
+      RearMogo.spin(reverse,100,pct);
     } else if(Controller1.ButtonLeft.pressing()){
       //Drop mogo down
-      mogoPos(3, false);
+      lock=!lock;
+      if(lock){
+        BaseLeftFront.setBrake(hold);
+        BaseLeftRear.setBrake(hold);
+        BaseRightFront.setBrake(hold);
+        BaseRightRear.setBrake(hold);
+      }else{
+        brake_unchecked();
+      }
     } else if (Controller1.ButtonRight.pressing()){
       //Mogo to ring height
       mogoPos(2, false);
@@ -309,6 +349,12 @@ void usercontrol() {
     } 
     else if(Controller1.ButtonY.pressing()){
       Intake.stop(coast);
+    }
+
+    if(Controller1.ButtonX.pressing()){
+      Pn.set(true);
+    } else if (Controller1.ButtonB.pressing()) {
+      Pn.set(false);
     }
 
     // Increase the tick count
@@ -359,6 +405,7 @@ int main() {
 
   // Initialize our PIDs and rotation tracking thread
   initialize();
+  //task mogoHeightTask(mogoHeight);
 
   Claw.setPosition(0, degrees);
   Bar.setPosition(0, deg);

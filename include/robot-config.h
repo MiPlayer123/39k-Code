@@ -26,6 +26,7 @@ extern rotation LOdom;
 extern gps GPS;
 extern bumper Carry;
 extern rotation SOdom;
+extern digital_out Pn;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

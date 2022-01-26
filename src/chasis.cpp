@@ -16,6 +16,10 @@
 #define integral_threshold 10
 #define kp_c .45 //.2
 
+//For PD balance
+#define   kp_bal 1 
+#define   kd_bal .5 
+
 //For other inertialDrive()
 #define   m_kp 2 // Kp
 #define   m_ki 0 // Ki
@@ -72,7 +76,7 @@ void brake_unchecked() {
 }
 
 // Turn to an absolute rotation
-void turn_absolute_inertial(double target) {
+void turn_absolute_inertial(double target, std::string swing) {
   double last_error = 1000;
   double last_output = 0;
   double integral = 0;
@@ -124,11 +128,25 @@ void turn_absolute_inertial(double target) {
       brake_unchecked();
       brake_cycles += 1;
     } else {
-      spin(&BaseLeftRear, output);
-      spin(&BaseLeftFront, output);
-      spin(&BaseRightRear, -output);
-      spin(&BaseRightFront, -output);
+      if(swing=="left"){
+        spin(&BaseLeftRear, output);
+        spin(&BaseLeftFront, output);
+        BaseRightFront.setBrake(coast);
+        BaseRightRear.setBrake(coast);
+        brake_cycles = 0;
+      } else if (swing=="right"){
+        spin(&BaseRightRear, output);
+        spin(&BaseRightFront, output);
+        BaseLeftFront.setBrake(coast);
+        BaseLeftRear.setBrake(coast);
       brake_cycles = 0;
+      } else{
+        spin(&BaseLeftRear, output);
+        spin(&BaseLeftFront, output);
+        spin(&BaseRightRear, -output);
+        spin(&BaseRightFront, -output);
+      brake_cycles = 0;
+      }
     }
     if (brake_cycles > 10 && fabs(error) < 1) {
       break;
@@ -330,6 +348,41 @@ void driveTo(double xTarget, double yTarget, double targetAngle, double speed) {
   if(targetAngle!=-1){ //If we want to face a certain angle
     turn_absolute_inertial(targetAngle);
   }
+}
+
+void autobalance(){
+  float error=0;
+  float prevError = 0;
+  float derivative = 0;
+  float intialError;
+  intialError = Inertial.pitch(degrees) - 0; 
+  while(true){
+    int position = Inertial.heading(degrees);
+    //Propotional
+    error = position - 0;
+    //Derivative
+    derivative = error - prevError;
+
+    if( std::abs(error) < .5)  // we will stop within .5 deg from target
+    {
+       break;
+    }
+
+    double motorPower = error * kp_bal  + derivative * kd_bal;
+
+    task::sleep(5);
+
+    BaseLeftFront.spin(vex::directionType::rev, motorPower, vex::velocityUnits::pct);
+    BaseLeftRear.spin(vex::directionType::rev, motorPower, vex::velocityUnits::pct);
+    BaseRightFront.spin(vex::directionType::fwd, motorPower, vex::velocityUnits::pct);
+    BaseRightRear.spin(vex::directionType::fwd, motorPower, vex::velocityUnits::pct);
+
+    prevError = error;
+  }
+  BaseLeftFront.stop(vex::brakeType::hold);
+  BaseLeftRear.stop(vex::brakeType::hold);
+  BaseRightFront.stop(vex::brakeType::hold);
+  BaseRightRear.stop(vex::brakeType::hold);
 }
 
 void inertialDrive(double target, double speed){

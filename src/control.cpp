@@ -49,9 +49,11 @@ void barT(double t){
   }
 }
 
+float posRing = 102; //position of ring
+int mogoToggle;
 
 void setMogo(double degs){
-float kP = 1;
+float kP = 2.4;
   float error;
   float mtrpwr;
   while(true){
@@ -72,6 +74,34 @@ float kP = 1;
   }
 }
 
+int mogoHeight(){
+  float kP = 1;
+  float error;
+  float mtrpwr;
+  mogoToggle=1;
+  while(true){
+    while(mogoToggle==1){
+      if(MogoRot.position(deg)>posRing){
+        error = MogoRot.position(deg) - posRing; 
+        mtrpwr = error*kP;
+        RearMogo.spin(reverse, mtrpwr, pct);
+      }
+      else {
+        error = posRing - MogoRot.position(deg);
+        mtrpwr = error*kP;
+        RearMogo.spin(fwd, mtrpwr, pct);
+      }
+      
+    }
+    if (error <=1){
+      RearMogo.stop(hold);
+      break;
+    }
+    break;
+  }
+  return 1;
+}
+
 void mogoThread(double degs){
   thread([](void *state) {
     double degs = *((double*)state);
@@ -83,17 +113,27 @@ void mogoThread(double degs){
 
 void mogoPos(int pos, bool daemon){
   float posUp = 188; //All the way up
-  float posRing = 102; //position of ring
+  //float timeOut = 2;
+  //float startTime=Brain.timer(timeUnits::msec);
   if (daemon){ //Backround 
     switch (pos){
       case 1: //All the way up
         mogoThread(posUp);
         break;
       case 2: //Ring height
+        /*while((std::abs(MogoRot.position(deg) - posRing)>.5)){ // && ((Brain.timer(timeUnits::msec)-startTime) < timeOut*1000)
+          mogoToggle=1;
+          vex::task::sleep(10);
+          mogoToggle=0;
+        }
+        RearMogo.stop(hold); 
+        mogoToggle=0;*/
         thread([]() {
-          setMogo(102);
+          setMogo(posRing);
+          if(std::abs(MogoRot.position(deg) - posRing)>.5){
+            std::terminate();
+          }
         }).detach();
-        break;
       case 3: //All the way down
         mogoThread(0);
         break;
@@ -107,7 +147,7 @@ void mogoPos(int pos, bool daemon){
         setMogo(posRing);
         break;
       case 3: //All the way down
-        setMogo(1);
+        setMogo(.8);
         break;
     }
   }

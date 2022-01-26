@@ -15,6 +15,8 @@ void barT(double t);
 
 void setMogo(double degs);
 
+int mogoHeight();
+
 void mogoThread(double degs);
 
 void mogoPos(int pos, bool daemon);

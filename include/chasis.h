@@ -22,7 +22,7 @@ double get_rotation();
 void brake_unchecked();
 
 // Turns the robot to an absolute rotation.
-void turn_absolute_inertial(double target);
+void turn_absolute_inertial(double target, std::string swing="None");
 
 // Turns the robot a relative number of degrees.
 void turn_rel_inertial(double target);
@@ -35,6 +35,9 @@ void moveRot (float rot, float speed);
 
 //Drive to point using odom position
 void driveTo(double xTarget, double yTarget, double targetAngle, double speed);
+
+//Automaticalyy balance robot on platform
+void autobalance();
 
 //Trial inertial drive
 void inertialDrive(double target, double speed); 
