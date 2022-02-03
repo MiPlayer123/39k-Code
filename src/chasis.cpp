@@ -171,11 +171,29 @@ void moveRot (float rot, float speed)
   BaseRightFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, true);
 }
 
-void turnRot (float rot, float speed){
-  BaseLeftRear.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
-  BaseLeftFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
-  BaseRightRear.rotateFor(-rot, rotationUnits::rev, speed, velocityUnits::pct, false);
-  BaseRightFront.rotateFor(-rot, rotationUnits::rev, speed, velocityUnits::pct, true);
+void turnRot (float rot, float speed, std::string swing){
+  if(swing=="left"){
+    BaseRightFront.stop(vex::brakeType::coast);
+    BaseRightRear.stop(vex::brakeType::coast);
+    BaseLeftRear.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
+    BaseLeftFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, true);
+
+  } else if (swing=="right"){
+    BaseLeftFront.stop(vex::brakeType::coast);
+    BaseLeftRear.stop(vex::brakeType::coast);
+    BaseRightRear.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
+    BaseRightFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, true);
+    
+  } else{
+    BaseLeftRear.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
+    BaseLeftFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
+    BaseRightRear.rotateFor(-rot, rotationUnits::rev, speed, velocityUnits::pct, false);
+    BaseRightFront.rotateFor(-rot, rotationUnits::rev, speed, velocityUnits::pct, true);
+  }
+  BaseLeftFront.stop(vex::brakeType::brake);
+  BaseRightFront.stop(vex::brakeType::brake);
+  BaseRightRear.stop(vex::brakeType::brake);
+  BaseLeftRear.stop(vex::brakeType::brake);
 }
 
 void inertial_drive(double target, double speed) {
@@ -409,7 +427,7 @@ void allBaseVoltage(bool Dir, double v){
 
 void driveToGoal(float volt) {
   allBaseVoltage(true, volt);
-  while(!LimitSwitch.pressing() || !LimitSwitch2.pressing()){
+  while(!LimitSwitch.pressing() && !LimitSwitch2.pressing()){
     vex::task::sleep(5); 
   }
   brake_unchecked();

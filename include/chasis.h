@@ -34,7 +34,7 @@ void inertial_drive(double target, double speed);
 void moveRot (float rot, float speed);
 
 //Turn Rotations
-void turnRot (float rot, float speed);
+void turnRot (float rot, float speed,std::string swing="None");
 
 //Drive to point using odom position
 void driveTo(double xTarget, double yTarget, double targetAngle, double speed);
