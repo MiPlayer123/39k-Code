@@ -8,11 +8,11 @@
 // BaseRightFront       motor         3               
 // RearMogo             motor         12              
 // Bar                  motor         1               
-// Claw                 motor         4               
+// Claw                 motor         5               
 // Skills               bumper        H               
 // Inertial             inertial      19              
-// Red                  bumper        A               
-// Blue                 bumper        B               
+// Right                bumper        A               
+// Left                 bumper        B               
 // Controller2          controller                    
 // leftRush             bumper        C               
 // rightRush            bumper        D               
@@ -22,9 +22,10 @@
 // ROdom                rotation      7               
 // LOdom                rotation      17              
 // GPS                  gps           16              
-// Carry                bumper        E               
 // SOdom                rotation      10              
 // Pn                   digital_out   F               
+// LimitSwitch          limit         G               
+// LimitSwitch2         limit         E               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -49,12 +50,103 @@ task odometryTask;
 task drawFieldTask;
 task mogoHeightTask;
 
+void insaneAuton() {
+  Pn.set(true);
+  allBaseVoltage(true, 12);
+  while(!LimitSwitch.pressing() && !LimitSwitch2.pressing()){
+    vex::task::sleep(5); 
+  }
+  clawSpinT(.2);
+  allBaseVoltage(false, 12);
+  Pn.set(false);
+  vex::task::sleep(1*1000); 
+  /* wall reset against back wall at a slower speed
+  drive out, turn, wall reset against side wall
+  forward until goal
+  turn 180, pick up w back, rings
+  */
+}
+
 void auton() {
 
   task odometryTask(positionTracking);
   task drawFieldTask(drawField);
 
   if(is_skills()){
+    mogoPos(3, false);
+    inertial_drive(-8, 30);
+    mogoPos(2, false); //Grab first red
+    turn_absolute_inertial(60);
+    inertial_drive(30.5, 70);
+    turn_absolute_inertial(127);
+    spinIntake();
+    inertial_drive(24, 70);
+    closeClaw(); //grab yellow  
+    stopIntake();
+    setBar(20);
+    startBar(105);
+    turn_absolute_inertial(120);
+    inertial_drive(30, 85);
+    stopBar();
+    mogoPos(3, false); //Drop blue
+    inertial_drive(20, 80);
+    setBar(74);
+    openClaw(); //Score yellow
+    moveRot(-1.7, 80);
+    turn_absolute_inertial(183);
+    startBar(-35);
+    inertial_drive(-36, 70);
+    vex::task::sleep(100);
+    mogoPos(2, false); //Grab red
+    stopBar();
+    turn_absolute_inertial(225);
+    setBar(2);
+    inertial_drive(12, 90);
+    inertial_drive(12, 50);
+    closeClaw(); //Grab first red
+    setBar(20);
+    turn_absolute_inertial(145);
+    startBar(90);
+    inertial_drive(40, 80);
+    stopBar();
+    setBar(90);
+    turn_absolute_inertial(115);
+    openClaw(); //Score 1st blue
+    turn_absolute_inertial(220);
+    spinIntake();
+    inertial_drive(30, 50);
+    stopIntake();
+    startBar(-20);
+    inertial_drive(-6, 80);
+    setBar(2);
+    inertial_drive(14, 40);
+    closeClaw(); //2nd yellow
+    setBar(25);
+    turn_absolute_inertial(65);
+    startBar(100);
+    inertial_drive(18, 80);
+    setBar(92);
+    inertial_drive(20, 55);
+    stopBar();
+    openClaw(); //score 2nd yellow
+    moveRot(-1, 80);
+    turn_absolute_inertial(240);
+    startBar(-30);
+    inertial_drive(40, 90);
+    stopBar();
+    spinIntake();
+    inertial_drive(30, 50);
+    inertial_drive(-6, 80);
+    setBar(2);
+    stopIntake();
+    inertial_drive(14, 40);
+    closeClaw(); //Grab blue
+    setBar(20);
+    inertial_drive(-10, 80);
+    turn_absolute_inertial(50);
+    inertial_drive(60, 90);
+    
+    /* //22o
     mogoPos(3, false);
     inertial_drive(-8, 30);
     mogoPos(2, false); //Grab first red
@@ -83,7 +175,10 @@ void auton() {
     setBar(20);
     inertial_drive(-11, 60);
     turn_absolute_inertial(45); //37
-    inertial_drive(-110, 70);
+    inertial_drive(-70, 80);
+    setMogo(20);
+    inertial_drive(-40, 80);
+    mogoPos(3, false);
     //turn_absolute_inertial(80); //push Yellow tall
     //inertial_drive(-23, 70);
     inertial_drive(12, 50); //3
@@ -129,87 +224,54 @@ void auton() {
     setBar(95);
     inertial_drive(67, 90);
     openClaw(); //Score red (220+)
-    moveRot(-3, 100);
+    moveRot(-3, 100); */
   } 
   
-  else if (Red.pressing()){
+  else if (Right.pressing()){
     //Right auto
     inertial_drive(45, 99);
     closeClaw();
-    inertial_drive(-15, 70);
+    inertial_drive(-20, 90);
     clawSpinT(.1);
-    setBar(15);
-    turn_absolute_inertial(0);
-    inertial_drive(-18.5, 70);
-    turn_absolute_inertial(-90);
+    setBar(20);
+    turnRot(-.4, 70);
+    turn_absolute_inertial(-60);
     mogoPos(3, false);
-    inertial_drive(-10, 40);
+    inertial_drive(-15, 40);
     mogoPos(2, false);
     spinIntake();
     vex::task::sleep(2000);
     stopIntake();
   } 
   
-  else if (Blue.pressing()){
+  else if (Left.pressing()){
     //Left auto
   } 
   else if(leftRush.pressing()){
-    /*
-    //Claw.spin(fwd,20,pct);
-    moveRot(0.5,10);
-    inertial_drive(48,98);
-    //Claw.stop(brake);
-    clawSpinT(.3);
-    inertial_drive(-40, 90);
-    */
-
-    turn_absolute_inertial(5);
-    moveRot(10,250);
-    spin(&BaseRightRear, 40);
-    spin(&BaseRightFront, 40);
-    spin(&BaseLeftRear, 40);
-    spin(&BaseLeftFront, 40);
-    Claw.spin(fwd,80,pct);
-    vex::task::sleep(700);
-    BaseLeftRear.stop(brake);
-    BaseLeftFront.stop(brake);
-    BaseRightRear.stop(brake);
-    BaseRightFront.stop(brake);
-    Claw.stop(hold);
-    moveRot(-10,70);
+    turnRot(.3, 80);
+    //turn_absolute_inertial(5);
+    inertial_drive(47, 99);
+    closeClaw();
+    inertial_drive(-20, 90);
+    clawSpinT(.1);
+    setBar(20);
+    turn_absolute_inertial(30);
+    inertial_drive(-25, 50);
+    mogoPos(3, false);
+    turn_absolute_inertial(-50);
+    inertial_drive(-16, 50);
+    mogoPos(2, false);
+    spinIntake();
+    vex::task::sleep(2000);
+    stopIntake();
   }
   else if (rightRush.pressing()) {
     //Right rush
 
-  } 
-  else if(Carry.pressing()){
-    //WP Mid
-    setBar(40);
-    moveRot(1, 30);
-    openClaw();
-    moveRot(-1, 30);
-    turn_absolute_inertial(-90);
-    inertial_drive(18, 50);
-    turn_absolute_inertial(-180);
-    setBar(3);
-    mogoPos(3, false);
-    inertial_drive(-96, 70);
-    mogoPos(2, false);
-    spinIntake();
-    inertial_drive(25, 30);
-    stopIntake();
-    turn_absolute_inertial(45);
-    /*
-    inertial_drive(30, 50);
-    closeClaw();
-    inertial_drive(-15, 50);
-    */
   }
   else{
-    startBar(70);
-    mogoRotation(.42);
-    stopBar();
-    //turn_absolute_inertial(90);
+    insaneAuton();
+    brake_unchecked();
   }
 } 
 

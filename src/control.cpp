@@ -6,7 +6,7 @@ using namespace vex;
 //Voids for auton 
 
 void setBar(double degs){
-  float kP = 7;
+  float kP = 8;
   float error;
   float mtrpwr;
   while(true){
@@ -49,7 +49,7 @@ void barT(double t){
   }
 }
 
-float posRing = 102; //position of ring
+float posRing = 103.2; //position of ring
 int mogoToggle;
 
 void setMogo(double degs){
@@ -64,7 +64,7 @@ float kP = 2.4;
     }
     else {
       error = degs - MogoRot.position(deg);
-      mtrpwr = error*kP;
+      mtrpwr = error*(kP+.6);
       RearMogo.spin(fwd, mtrpwr, pct);
     }
     if (error <=1){
@@ -183,11 +183,11 @@ void closeClaw(){
 
 void clawSpinT(float t){
     if(t>0){
-    Claw.spin(fwd,80,pct);
+    Claw.spin(fwd,100,pct);
     vex::task::sleep(t*1000);
     Claw.stop(hold);
   } else{    
-    Claw.spin(reverse,80,pct);
+    Claw.spin(reverse,100,pct);
     vex::task::sleep(-t*1000);
     Claw.stop(hold);
   }

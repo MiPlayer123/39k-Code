@@ -13,8 +13,8 @@ extern motor Bar;
 extern motor Claw;
 extern bumper Skills;
 extern inertial Inertial;
-extern bumper Red;
-extern bumper Blue;
+extern bumper Right;
+extern bumper Left;
 extern controller Controller2;
 extern bumper leftRush;
 extern bumper rightRush;
@@ -24,9 +24,10 @@ extern rotation BarRot;
 extern rotation ROdom;
 extern rotation LOdom;
 extern gps GPS;
-extern bumper Carry;
 extern rotation SOdom;
 extern digital_out Pn;
+extern limit LimitSwitch;
+extern limit LimitSwitch2;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

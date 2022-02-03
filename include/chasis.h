@@ -33,11 +33,20 @@ void inertial_drive(double target, double speed);
 //Move given rotations
 void moveRot (float rot, float speed);
 
+//Turn Rotations
+void turnRot (float rot, float speed);
+
 //Drive to point using odom position
 void driveTo(double xTarget, double yTarget, double targetAngle, double speed);
 
 //Automaticalyy balance robot on platform
 void autobalance();
+
+//Base voltage   
+void allBaseVoltage(bool Dir, double v);
+
+//Drives to a goal and grabs it
+void driveToGoal(float volt=10);
 
 //Trial inertial drive
 void inertialDrive(double target, double speed); 

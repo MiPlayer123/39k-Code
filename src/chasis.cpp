@@ -171,6 +171,13 @@ void moveRot (float rot, float speed)
   BaseRightFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, true);
 }
 
+void turnRot (float rot, float speed){
+  BaseLeftRear.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
+  BaseLeftFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
+  BaseRightRear.rotateFor(-rot, rotationUnits::rev, speed, velocityUnits::pct, false);
+  BaseRightFront.rotateFor(-rot, rotationUnits::rev, speed, velocityUnits::pct, true);
+}
+
 void inertial_drive(double target, double speed) {
   BaseRightRear.setPosition(0, turns); 
   BaseLeftRear.setPosition(0, turns);
@@ -383,6 +390,30 @@ void autobalance(){
   BaseLeftRear.stop(vex::brakeType::hold);
   BaseRightFront.stop(vex::brakeType::hold);
   BaseRightRear.stop(vex::brakeType::hold);
+}
+
+void allBaseVoltage(bool Dir, double v){
+  if(Dir){ 
+    BaseLeftFront.spin(fwd, v, volt); 
+    BaseLeftRear.spin(fwd, v, volt);
+    BaseRightFront.spin(fwd, v, volt); 
+   BaseRightRear.spin(fwd, v, volt);
+  }
+  else {
+    BaseLeftFront.spin(reverse, v, volt); 
+    BaseLeftRear.spin(reverse, v, volt);
+    BaseRightFront.spin(reverse, v, volt); 
+    BaseRightRear.spin(reverse, v, volt);
+  }
+}
+
+void driveToGoal(float volt) {
+  allBaseVoltage(true, volt);
+  while(!LimitSwitch.pressing() || !LimitSwitch2.pressing()){
+    vex::task::sleep(5); 
+  }
+  brake_unchecked();
+  closeClaw();
 }
 
 void inertialDrive(double target, double speed){

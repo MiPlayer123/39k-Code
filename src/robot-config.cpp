@@ -15,11 +15,11 @@ motor BaseRightRear = motor(PORT20, ratio6_1, true);
 motor BaseRightFront = motor(PORT3, ratio6_1, true);
 motor RearMogo = motor(PORT12, ratio36_1, true);
 motor Bar = motor(PORT1, ratio36_1, false);
-motor Claw = motor(PORT4, ratio36_1, true);
+motor Claw = motor(PORT5, ratio36_1, true);
 bumper Skills = bumper(Brain.ThreeWirePort.H);
 inertial Inertial = inertial(PORT19);
-bumper Red = bumper(Brain.ThreeWirePort.A);
-bumper Blue = bumper(Brain.ThreeWirePort.B);
+bumper Right = bumper(Brain.ThreeWirePort.A);
+bumper Left = bumper(Brain.ThreeWirePort.B);
 controller Controller2 = controller(partner);
 bumper leftRush = bumper(Brain.ThreeWirePort.C);
 bumper rightRush = bumper(Brain.ThreeWirePort.D);
@@ -29,9 +29,10 @@ rotation BarRot = rotation(PORT15, false);
 rotation ROdom = rotation(PORT7, false);
 rotation LOdom = rotation(PORT17, false);
 gps GPS = gps(PORT16, 152.40, 50.80, mm, 180);
-bumper Carry = bumper(Brain.ThreeWirePort.E);
 rotation SOdom = rotation(PORT10, false);
 digital_out Pn = digital_out(Brain.ThreeWirePort.F);
+limit LimitSwitch = limit(Brain.ThreeWirePort.G);
+limit LimitSwitch2 = limit(Brain.ThreeWirePort.E);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
