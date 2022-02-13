@@ -49,7 +49,7 @@ void barT(double t){
   }
 }
 
-float posRing = 103.2; //position of ring
+float posRing = 102; //position of ring (103.2)
 int mogoToggle;
 
 void setMogo(double degs){

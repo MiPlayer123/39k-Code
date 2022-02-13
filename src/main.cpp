@@ -26,6 +26,7 @@
 // Pn                   digital_out   F               
 // LimitSwitch          limit         G               
 // LimitSwitch2         limit         E               
+// Distance             distance      6               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -50,16 +51,16 @@ task odometryTask;
 task drawFieldTask;
 task mogoHeightTask;
 
-void insaneAuton() {
+void insaneAuton(float tim=1) {
   Pn.set(true);
   allBaseVoltage(true, 12);
-  while(!LimitSwitch.pressing() && !LimitSwitch2.pressing()){
+  while(!LimitSwitch.pressing() && !LimitSwitch2.pressing() && (Distance.value()>120 || !Distance.isObjectDetected())){ //!LimitSwitch.pressing() && !LimitSwitch2.pressing() && 
     vex::task::sleep(5); 
   }
   clawSpinT(.2);
   allBaseVoltage(false, 12);
   Pn.set(false);
-  vex::task::sleep(1*1000); 
+  vex::task::sleep(tim*1000); 
   /* wall reset against back wall at a slower speed
   drive out, turn, wall reset against side wall
   forward until goal
@@ -73,7 +74,7 @@ void auton() {
   task drawFieldTask(drawField);
 
   if(is_skills()){
-    /*
+    //280
     mogoPos(3, false);
     inertial_drive(-8, 30);
     mogoPos(2, false); //Grab first red
@@ -105,7 +106,7 @@ void auton() {
     inertial_drive(12, 90);
     inertial_drive(12, 50);
     closeClaw(); //Grab first red
-    setBar(20);
+    setBar(25);
     turn_absolute_inertial(145);
     startBar(90);
     inertial_drive(40, 80);
@@ -123,7 +124,7 @@ void auton() {
     inertial_drive(14, 40);
     closeClaw(); //2nd yellow
     setBar(25);
-    turn_absolute_inertial(65);
+    turn_absolute_inertial(60);
     startBar(100);
     inertial_drive(18, 80);
     setBar(92);
@@ -133,20 +134,35 @@ void auton() {
     moveRot(-1, 80);
     turn_absolute_inertial(240);
     startBar(-30);
-    inertial_drive(40, 90);
+    inertial_drive(30, 90);
     stopBar();
     spinIntake();
-    inertial_drive(30, 50);
+    inertial_drive(35, 50);
     inertial_drive(-6, 80);
     setBar(2);
     stopIntake();
     inertial_drive(14, 40);
     closeClaw(); //Grab blue
-    setBar(20);
+    setBar(30);
     inertial_drive(-10, 80);
-    turn_absolute_inertial(50);
-    inertial_drive(60, 90);
-    */
+    turn_absolute_inertial(51);
+    startBar(50);
+    inertial_drive(68, 90);
+    setBar(92);
+    openClaw(); //Drop blue
+    startBar(-50);
+    inertial_drive(-14, 80);
+    turn_absolute_inertial(-40);
+    setBar(2);
+    inertial_drive(25, 70);
+    closeClaw();
+    setBar(20);
+    turn_absolute_inertial(-90);
+    startBar(90);
+    inertial_drive(30, 90);
+    setBar(60);
+    openClaw(); //Score tall yellow
+    
     /*
     //22o
     mogoPos(3, false);
@@ -230,74 +246,121 @@ void auton() {
   } 
   
   else if (Right.pressing()){
-    //Right auto
-    inertial_drive(45, 99);
-    closeClaw();
-    inertial_drive(-20, 90);
-    clawSpinT(.1);
+    //Right auto rush WP
+    insaneAuton();
+    vex::task::sleep(850);
+    brake_unchecked();
     setBar(20);
-    turnRot(-.4, 70);
-    turn_absolute_inertial(-60);
+    inertial_drive(10, 90);
+    turnRot(-.8, 60);
+    moveRot(2, 90);
+    turn_absolute_inertial(-90);
     mogoPos(3, false);
-    inertial_drive(-15, 40);
-    mogoPos(2, false);
+    inertial_drive(-13, 60);
+    mogoPos(2,false);
+    setBar(50);
     spinIntake();
-    vex::task::sleep(2000);
+    turn_absolute_inertial(0);
+    inertial_drive(40, 50);
+    inertial_drive(-45, 90);
     stopIntake();
   } 
   
   else if (Left.pressing()){
-    //Left auto
+    //Left auto rush double WP
     insaneAuton();
-    vex::task::sleep(100);
+    brake_unchecked();
+    turn_absolute_inertial(14);
+    allBaseVoltage(false, 12);
+    vex::task::sleep(850);
     brake_unchecked();
     setBar(20);
+    inertial_drive(18, 80);
     turn_absolute_inertial(90);
-    allBaseVoltage(false, 8);
-    vex::task::sleep(1000);
     brake_unchecked();
-    inertial_drive(80, 80);
-    turn_absolute_inertial(-89);
+    inertial_drive(65, 80);
+    turn_absolute_inertial(-90);
     mogoPos(3, false);
-    inertial_drive(-17, 50);
+    inertial_drive(-22, 50);
     mogoPos(2,false);
     spinIntake();
-    vex::task::sleep(2000);
+    vex::task::sleep(750);
+    inertial_drive(20, 95);
     stopIntake();
     
   } 
   else if(leftRush.pressing()){
+    //Left double rush WP
     insaneAuton();
     brake_unchecked();
     setBar(20);
-    turnRot(-4, 100);
-    openClaw();
-    setBar(3);
-    turnRot(4, 100); //5.2
-    turn_absolute_inertial(49);
-    moveRot(2, 90);
-    driveToGoal(8);
-    moveRot(-5, 90);
-    
-    /*
-    turnRot(-3, 100, "left");
-    openClaw();
-    turnRot(-4, 100, "left");
+    turn_absolute_inertial(-98);
+    inertial_drive(-19, 90);
+    moveRot(-1, 95);
+    moveRot(1, 95);
+    turn_absolute_inertial(-135);
     mogoPos(3, false);
-    moveRot(-6, 80);
+    inertial_drive(-28, 70);
     setMogo(30);
-    moveRot(7, 80);
-    setBar(3);*/
+    inertial_drive(60, 85);
   }
   else if (rightRush.pressing()) {
-    //Right rush
-
+    //Right double rush WP
+    insaneAuton(.8);
+    brake_unchecked();
+    setBar(20);
+    turn_absolute_inertial(120);
+    mogoPos(3, false);
+    inertial_drive(-31, 70);
+    setMogo(30);
+    moveRot(3, 50);
+    turn_absolute_inertial(155);
+    inertial_drive(22, 90);
+    mogoPos(3, false);
+    turn_absolute_inertial(270);
+    inertial_drive(-10, 60);
+    mogoPos(2, false);
+    spinIntake();
+    vex::task::sleep(1000);
+    stopIntake();
+    moveRot(1, 95);
+    /*
+    allBaseVoltage(true, 12);
+    while(!LimitSwitch.pressing() && !LimitSwitch2.pressing() && (Distance.value()>120 || !Distance.isObjectDetected())){
+      vex::task::sleep(5); 
+    }
+    clawSpinT(.2);
+    brake_unchecked();
+    setBar(20);
+    BaseRightFront.spin(reverse, 12,volt);
+    BaseRightRear.spin(reverse, 12, volt); 
+    BaseLeftFront.spin(fwd, 6, volt); 
+    BaseLeftRear.spin(fwd, 6, volt); 
+    vex::task::sleep(800); 
+    brake_unchecked(); 
+    mogoPos(3, false);
+    setBar(30);
+    inertial_drive(-20, 65);
+    setMogo(30);
+    turn_absolute_inertial(-35);
+    inertial_drive(-60, 85);
+    mogoPos(3,false); 
+    inertial_drive(19, 80);
+    turn_absolute_inertial(-82);
+    inertial_drive(-12, 80);
+    mogoPos(2, false);
+    spinIntake();
+    vex::task::sleep(2000);
+    stopIntake();
+    */
   }
   else{
-    turnRot(1, 90);
-    turnRot(-6, 90, "left");
+    insaneAuton();
+    brake_unchecked();
   }
 } 
+
+bool lock= false;
 
 void usercontrol() {
   
@@ -319,8 +382,15 @@ void usercontrol() {
     if (left_speed < 5 && left_speed > -5) {
       // This condition only calls the stop instruction once
       if (stop_left) {
-        BaseLeftRear.stop(coast);
-        BaseLeftFront.stop(coast);
+        if(lock){
+        BaseLeftRear.stop(hold);
+        BaseLeftFront.stop(hold);
+        }else{
+          BaseLeftRear.stop(coast);
+          BaseLeftFront.stop(coast);
+        }
+        // BaseLeftRear.stop(coast);
+        // BaseLeftFront.stop(coast);
         stop_left = false;
       }
     }
@@ -334,8 +404,15 @@ void usercontrol() {
     // This is equivalent to the code above
     if (right_speed < 10 && right_speed > -10) {
       if (stop_right) {
+        if(lock){
+        BaseRightRear.stop(hold);
+        BaseRightFront.stop(hold);
+      }else{
         BaseRightRear.stop(coast);
         BaseRightFront.stop(coast);
+      }
+      // BaseRightRear.stop(coast);
+      // BaseRightFront.stop(coast);
         stop_right = false;
       }
     } else {
@@ -404,24 +481,14 @@ void usercontrol() {
     }
     */
 
-    bool lock= false;
-
     if (Controller1.ButtonUp.pressing()) { // && (MogoRot.position(deg)<194 || MogoRot.position(deg)>300)
       RearMogo.spin(fwd,100,pct);
     }
     else if (Controller1.ButtonDown.pressing()) { // && MogoRot.position(deg)>0
       RearMogo.spin(reverse,100,pct);
     } else if(Controller1.ButtonLeft.pressing()){
-      //Drop mogo down
+      //Toggle lock
       lock=!lock;
-      if(lock){
-        BaseLeftFront.setBrake(hold);
-        BaseLeftRear.setBrake(hold);
-        BaseRightFront.setBrake(hold);
-        BaseRightRear.setBrake(hold);
-      }else{
-        brake_unchecked();
-      }
     } else if (Controller1.ButtonRight.pressing()){
       //Mogo to ring height
       mogoPos(2, false);

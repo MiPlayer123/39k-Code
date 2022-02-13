@@ -28,6 +28,7 @@ extern rotation SOdom;
 extern digital_out Pn;
 extern limit LimitSwitch;
 extern limit LimitSwitch2;
+extern distance Distance;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

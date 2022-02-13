@@ -33,6 +33,7 @@ rotation SOdom = rotation(PORT10, false);
 digital_out Pn = digital_out(Brain.ThreeWirePort.F);
 limit LimitSwitch = limit(Brain.ThreeWirePort.G);
 limit LimitSwitch2 = limit(Brain.ThreeWirePort.E);
+distance Distance = distance(PORT6);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
