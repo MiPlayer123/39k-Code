@@ -21,12 +21,13 @@
 // BarRot               rotation      15              
 // ROdom                rotation      7               
 // LOdom                rotation      17              
-// GPS                  gps           16              
+// GPS                  gps           21              
 // SOdom                rotation      10              
 // Pn                   digital_out   F               
 // LimitSwitch          limit         G               
 // LimitSwitch2         limit         E               
 // Distance             distance      6               
+// Distance2            distance      16              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -54,18 +55,13 @@ task mogoHeightTask;
 void insaneAuton(float tim=1) {
   Pn.set(true);
   allBaseVoltage(true, 12);
-  while(!LimitSwitch.pressing() && !LimitSwitch2.pressing() && (Distance.value()>120 || !Distance.isObjectDetected())){ //!LimitSwitch.pressing() && !LimitSwitch2.pressing() && 
+  while((Distance.value()>120 || !Distance.isObjectDetected())){ 
     vex::task::sleep(5); 
   }
-  clawSpinT(.2);
+  clawSpinT(.23);
   allBaseVoltage(false, 12);
   Pn.set(false);
   vex::task::sleep(tim*1000); 
-  /* wall reset against back wall at a slower speed
-  drive out, turn, wall reset against side wall
-  forward until goal
-  turn 180, pick up w back, rings
-  */
 }
 
 void auton() {
@@ -355,8 +351,11 @@ void auton() {
     */
   }
   else{
-    insaneAuton();
+    insaneAuton(0);
     brake_unchecked();
+    voltageDist(920);
+    turn_absolute_inertial(0);
+    inertial_drive(24, 50,true);
   }
 } 
 

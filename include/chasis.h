@@ -22,13 +22,13 @@ double get_rotation();
 void brake_unchecked();
 
 // Turns the robot to an absolute rotation.
-void turn_absolute_inertial(double target, std::string swing="None");
+void turn_absolute_inertial(double target, std::string swing="None", bool heavy=false);
 
 // Turns the robot a relative number of degrees.
 void turn_rel_inertial(double target);
 
 //PID drive with inertial correction
-void inertial_drive(double target, double speed);
+void inertial_drive(double target, double speed, bool dist=false);
 
 //Move given rotations
 void moveRot (float rot, float speed);
@@ -44,6 +44,9 @@ void autobalance();
 
 //Base voltage   
 void allBaseVoltage(bool Dir, double v);
+
+//Move backwards voltage to distance
+void voltageDist(double dist);
 
 //Drives to a goal and grabs it
 void driveToGoal(float volt=10);

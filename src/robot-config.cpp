@@ -28,12 +28,13 @@ rotation MogoRot = rotation(PORT11, false);
 rotation BarRot = rotation(PORT15, false);
 rotation ROdom = rotation(PORT7, false);
 rotation LOdom = rotation(PORT17, false);
-gps GPS = gps(PORT16, 152.40, 50.80, mm, 180);
+gps GPS = gps(PORT21, 152.40, 50.80, mm, 180);
 rotation SOdom = rotation(PORT10, false);
 digital_out Pn = digital_out(Brain.ThreeWirePort.F);
 limit LimitSwitch = limit(Brain.ThreeWirePort.G);
 limit LimitSwitch2 = limit(Brain.ThreeWirePort.E);
 distance Distance = distance(PORT6);
+distance Distance2 = distance(PORT16);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

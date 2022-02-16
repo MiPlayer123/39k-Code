@@ -9,6 +9,11 @@
 #define TURN_MAX_V (BASE_MAX_V * 0.7)
 #define TURN_MIN_V 3
 
+//For heavy PID turns 
+#define TURN_KP_HEAVY 0.05
+#define TURN_KI_HEAVY 0.002
+#define TURN_KD_HEAVY 0.001
+
 //For main inertial_drive
 #define   kp 8.7 //10, 21.1 
 #define   ki .5 //.8, 1.1
@@ -76,7 +81,7 @@ void brake_unchecked() {
 }
 
 // Turn to an absolute rotation
-void turn_absolute_inertial(double target, std::string swing) {
+void turn_absolute_inertial(double target, std::string swing, bool heavy) {
   double last_error = 1000;
   double last_output = 0;
   double integral = 0;
@@ -103,8 +108,13 @@ void turn_absolute_inertial(double target, std::string swing) {
       derivative = (error - last_error) / BASE_DT;
     }
     
-    // Calculate the raw output and update the last error
-    double raw_output = TURNING_RADIUS * (TURN_KP * error + TURN_KI * integral + TURN_KD * derivative); // in/s
+    // Calculate the raw output and update the last erro
+    double raw_output;
+    if(heavy){
+      raw_output = TURNING_RADIUS * (TURN_KP_HEAVY * error + TURN_KI_HEAVY * integral + TURN_KD_HEAVY * derivative);
+    }else{
+      raw_output = TURNING_RADIUS * (TURN_KP * error + TURN_KI * integral + TURN_KD * derivative); // in/s
+    }
     last_error = error;
 
     // Constrain acceleration between iterations and calculate the output
@@ -134,13 +144,15 @@ void turn_absolute_inertial(double target, std::string swing) {
         BaseRightFront.setBrake(coast);
         BaseRightRear.setBrake(coast);
         brake_cycles = 0;
-      } else if (swing=="right"){
+      } 
+      else if (swing=="right"){
         spin(&BaseRightRear, output);
         spin(&BaseRightFront, output);
         BaseLeftFront.setBrake(coast);
         BaseLeftRear.setBrake(coast);
       brake_cycles = 0;
-      } else{
+      } 
+      else{
         spin(&BaseLeftRear, output);
         spin(&BaseLeftFront, output);
         spin(&BaseRightRear, -output);
@@ -196,7 +208,7 @@ void turnRot (float rot, float speed, std::string swing){
   BaseLeftRear.stop(vex::brakeType::brake);
 }
 
-void inertial_drive(double target, double speed) {
+void inertial_drive(double target, double speed, bool dist) {
   BaseRightRear.setPosition(0, turns); 
   BaseLeftRear.setPosition(0, turns);
 
@@ -214,7 +226,11 @@ void inertial_drive(double target, double speed) {
     double error_c = angle - get_rotation();
     double error1 = target - BaseRightRear.position(turns) * TURNS_TO_INCHES;
     double error2 = target - BaseLeftRear.position(turns) * TURNS_TO_INCHES;
-    double error = (error1 + error2) / 2;
+    double error;
+    if(dist)
+      error = target - Distance2.value()/25.4;
+    else
+      error = (error1 + error2) / 2;
 
     // Get the turn output
     double raw_output_correct = (TURN_KP * error_c + 0.1 * integral_c); // in/s
@@ -427,11 +443,19 @@ void allBaseVoltage(bool Dir, double v){
 
 void driveToGoal(float volt) {
   allBaseVoltage(true, volt);
-  while(!LimitSwitch.pressing() && !LimitSwitch2.pressing()){
+  while((Distance.value()>120 || !Distance.isObjectDetected())){
     vex::task::sleep(5); 
   }
   brake_unchecked();
   closeClaw();
+}
+
+void voltageDist(double dist){
+  allBaseVoltage(false, 12);
+  while((Distance2.value()>dist || !Distance2.isObjectDetected())){
+    vex::task::sleep(5); 
+  }
+  brake_unchecked();
 }
 
 void inertialDrive(double target, double speed){
