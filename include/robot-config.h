@@ -26,10 +26,9 @@ extern rotation LOdom;
 extern gps GPS;
 extern rotation SOdom;
 extern digital_out Pn;
-extern limit LimitSwitch;
-extern limit LimitSwitch2;
 extern distance Distance;
 extern distance Distance2;
+extern bumper Elims;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

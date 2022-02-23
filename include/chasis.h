@@ -22,7 +22,7 @@ double get_rotation();
 void brake_unchecked();
 
 // Turns the robot to an absolute rotation.
-void turn_absolute_inertial(double target, std::string swing="None", bool heavy=false);
+void turn_absolute_inertial(double target, bool heavy=false, std::string swing="None");
 
 // Turns the robot a relative number of degrees.
 void turn_rel_inertial(double target);
@@ -49,7 +49,7 @@ void allBaseVoltage(bool Dir, double v);
 void voltageDist(double dist);
 
 //Drives to a goal and grabs it
-void driveToGoal(float volt=10);
+void driveToGoal(float volt=8);
 
 //Trial inertial drive
 void inertialDrive(double target, double speed); 

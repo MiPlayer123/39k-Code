@@ -81,7 +81,7 @@ void brake_unchecked() {
 }
 
 // Turn to an absolute rotation
-void turn_absolute_inertial(double target, std::string swing, bool heavy) {
+void turn_absolute_inertial(double target, bool heavy, std::string swing) {
   double last_error = 1000;
   double last_output = 0;
   double integral = 0;
@@ -443,7 +443,7 @@ void allBaseVoltage(bool Dir, double v){
 
 void driveToGoal(float volt) {
   allBaseVoltage(true, volt);
-  while((Distance.value()>120 || !Distance.isObjectDetected())){
+  while((Distance.value()>90 || !Distance.isObjectDetected())){
     vex::task::sleep(5); 
   }
   brake_unchecked();
