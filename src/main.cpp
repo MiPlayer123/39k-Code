@@ -5,8 +5,8 @@
 // BaseLeftRear         motor         14              
 // BaseLeftFront        motor         13              
 // BaseRightRear        motor         20              
-// BaseRightFront       motor         3               
-// RearMogo             motor         12              
+// BaseRightFront       motor         2               
+// RearMogo             motor         17              
 // Bar                  motor         1               
 // Claw                 motor         5               
 // Skills               bumper        H               
@@ -20,7 +20,7 @@
 // MogoRot              rotation      11              
 // BarRot               rotation      15              
 // ROdom                rotation      7               
-// LOdom                rotation      17              
+// LOdom                rotation      3               
 // GPS                  gps           21              
 // SOdom                rotation      10              
 // Pn                   digital_out   G               
@@ -89,7 +89,7 @@ void auton() {
     stopIntake();
     setBar(20);
     startBar(105);
-    turn_absolute_inertial(120);
+    turn_absolute_inertial(120, true);
     inertial_drive(30, 85);
     stopBar();
     mogoPos(3, false); //Drop blue
@@ -109,25 +109,26 @@ void auton() {
     inertial_drive(12, 50);
     closeClaw(); //Grab first red
     setBar(25);
-    turn_absolute_inertial(145);
+    turn_absolute_inertial(145, true);
     startBar(90);
     inertial_drive(40, 80);
     stopBar();
     setBar(90);
-    turn_absolute_inertial(115);
+    turn_absolute_inertial(110, true);
     openClaw(); //Score 1st blue
-    turn_absolute_inertial(220);
-    spinIntake();
-    inertial_drive(34, 50);
-    stopIntake();
+    turn_absolute_inertial(180);
     startBar(-20);
+    spinIntake();
+    inertial_drive(32, 95);
     inertial_drive(-10, 80);
+    turn_absolute_inertial(240);
+    stopBar();
+    stopIntake();
     setBar(2);
-    inertial_drive(18, 40);
-    driveToGoal();
-    closeClaw(); //2nd yellow
+    moveRot(1.5, 60);
+    driveToGoal(); //2nd yellow
     setBar(25);
-    turn_absolute_inertial(60);
+    turn_absolute_inertial(55, true);
     startBar(100);
     inertial_drive(18, 80);
     setBar(92);
@@ -141,7 +142,7 @@ void auton() {
     stopBar();
     turn_absolute_inertial(270);
     spinIntake();
-    inertial_drive(33, 45);
+    inertial_drive(35, 80);
     turn_absolute_inertial(180);
     setBar(2);
     stopIntake();
@@ -149,25 +150,40 @@ void auton() {
     driveToGoal();//Grab blue
     inertial_drive(-10, 80);
     setBar(30);
-    turn_absolute_inertial(65);
+    turn_absolute_inertial(65, true);
+    spinIntake();
     startBar(50);
     inertial_drive(85, 90);
     setBar(92);
     openClaw(); //Drop blue
+    stopIntake();
     startBar(-50);
-    inertial_drive(-14, 80);
+    inertial_drive(-13, 80);
     turn_absolute_inertial(-45);
     setBar(2);
-    inertial_drive(15, 70); //25
-    driveToGoal();
-    //closeClaw(); //grab tall yellow
+    inertial_drive(13, 70); //15
+    driveToGoal(6); //grab tall yellow
     setBar(20);
-    turn_absolute_inertial(-90);
+    turn_absolute_inertial(-90, true);
     startBar(100);
-    inertial_drive(30, 65);
+    spinIntake();
+    inertial_drive(30, 85);
     setBar(70);
+    inertial_drive(10, 60);
     openClaw(); //Score tall yellow
+    stopIntake();
     
+    /* //NEEDS TESTING
+    moveRot(-1, 90);
+    startBar(-20);
+    turn_absolute_inertial(110);
+    inertial_drive(50, 90);
+    turn_absolute_inertial(30);
+    setBar(2);
+    stopIntake();
+    inertial_drive(10, 60);
+    driveToGoal(); //Grab 2nd red
+    */
   } 
   
   else if (Right.pressing()){
@@ -176,6 +192,7 @@ void auton() {
     insaneAuton(0);
     brake_unchecked();
     voltageDist(920);
+    setBar(20);
     inertial_drive(29.5, 70, true);
     turn_absolute_inertial(-90);
     inertial_drive(10, 80);
@@ -203,9 +220,11 @@ void auton() {
     vex::task::sleep(750);
     turn_absolute_inertial(-55);
     stopIntake();
-    inertial_drive(46, 60);
+    inertial_drive(47, 60);
     closeClaw();
-    inertial_drive(-50, 90);
+    inertial_drive(-40, 90);
+    turnRot(2, 80);
+    inertial_drive(-10, 90);
     
   } 
   else if(leftRush.pressing()){
@@ -213,16 +232,17 @@ void auton() {
     insaneAuton(0);
     brake_unchecked();
     voltageDist(1150);
-    inertial_drive(40, 50,true);
+    inertial_drive(38, 50,true);
     setBar(25);
+    moveRot(.45, 80);
     turn_absolute_inertial(-70);
-    inertial_drive(-10, 80);
-    moveRot(1, 80);
+    inertial_drive(-15, 80);
+    moveRot(2, 80);
     turn_absolute_inertial(-120);
     mogoPos(3, false);
-    inertial_drive(-24, 60); //Distance
+    inertial_drive(-29, 60); //Distance
     //inertial_drive(1.2, 60, true); //Sensor
-    setMogo(25);
+    setMogo(27);
     inertial_drive(50, 95);
   }
   else if (rightRush.pressing()) {
@@ -230,7 +250,7 @@ void auton() {
     //Currently not needed
   }
   else{
-    insaneAuton(0); //Single rush
+   insaneAuton(0); //Single rush
     brake_unchecked();
     voltageDist(920);
     turn_absolute_inertial(0);

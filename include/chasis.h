@@ -49,7 +49,7 @@ void allBaseVoltage(bool Dir, double v);
 void voltageDist(double dist);
 
 //Drives to a goal and grabs it
-void driveToGoal(float volt=8);
+void driveToGoal(float volt=7);
 
 //Trial inertial drive
 void inertialDrive(double target, double speed); 

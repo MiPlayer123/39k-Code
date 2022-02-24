@@ -10,8 +10,8 @@
 #define TURN_MIN_V 3
 
 //For heavy PID turns 
-#define TURN_KP_HEAVY 0.05
-#define TURN_KI_HEAVY 0.002
+#define TURN_KP_HEAVY 0.035
+#define TURN_KI_HEAVY 0.0048
 #define TURN_KD_HEAVY 0.001
 
 //For main inertial_drive
