@@ -8,7 +8,7 @@
 // BaseRightFront       motor         2               
 // RearMogo             motor         17              
 // Bar                  motor         1               
-// Claw                 motor         5               
+// Claw                 motor         4               
 // Skills               bumper        H               
 // Inertial             inertial      19              
 // Right                bumper        A               
@@ -90,7 +90,7 @@ void auton() {
     setBar(20);
     startBar(105);
     turn_absolute_inertial(120, true);
-    inertial_drive(30, 85);
+    inertial_drive(30, 90);
     stopBar();
     mogoPos(3, false); //Drop blue
     inertial_drive(20, 80);
@@ -116,6 +116,7 @@ void auton() {
     setBar(90);
     turn_absolute_inertial(110, true);
     openClaw(); //Score 1st blue
+    // moveRot(-.5, 90);
     turn_absolute_inertial(180);
     startBar(-20);
     spinIntake();
@@ -146,32 +147,38 @@ void auton() {
     turn_absolute_inertial(180);
     setBar(2);
     stopIntake();
-    inertial_drive(6, 45);
-    driveToGoal();//Grab blue
-    inertial_drive(-10, 80);
+    inertial_drive(11, 70);
+    allBaseVoltage(true,7);
+    vex::task::sleep(750);
+    closeClaw();
+    brake_unchecked();
+    //driveToGoal();//Grab blue
+    inertial_drive(-14, 80);
     setBar(30);
-    turn_absolute_inertial(65, true);
+    turn_absolute_inertial(75, true);
     spinIntake();
     startBar(50);
     inertial_drive(85, 90);
-    setBar(92);
+    setBar(98);
     openClaw(); //Drop blue
     stopIntake();
     startBar(-50);
     inertial_drive(-13, 80);
     turn_absolute_inertial(-45);
     setBar(2);
-    inertial_drive(13, 70); //15
-    driveToGoal(6); //grab tall yellow
+    inertial_drive(13, 60); //15
+    driveToGoal(5); //grab tall yellow
     setBar(20);
     turn_absolute_inertial(-90, true);
     startBar(100);
     spinIntake();
-    inertial_drive(30, 85);
-    setBar(70);
-    inertial_drive(10, 60);
+    inertial_drive(20, 90);
+    setBar(100);
+    inertial_drive(23, 40);
+    setBar(85);
     openClaw(); //Score tall yellow
     stopIntake();
+    turn_absolute_inertial(0);
     
     /* //NEEDS TESTING
     moveRot(-1, 90);
@@ -410,6 +417,18 @@ void usercontrol() {
     } else if (Controller1.ButtonB.pressing()) {
       Pn.set(false);
     }
+    //Brain Print
+    /*
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print("Battery: ", Brain.Battery.capacity());
+    Controller1.Screen.setCursor(1, 2);
+    Controller1.Screen.print("BL Temp: ", BaseLeftRear.temperature(percent)); 
+    Controller1.Screen.setCursor(1, 3);
+    Controller1.Screen.print("Lock: ", lock);
+    Controller1.Screen.setCursor(1, 4);
+    Controller1.Screen.print("inertial: ", get_rotation());  
+    */ 
+
 
     // Increase the tick count
     ticks += 1;

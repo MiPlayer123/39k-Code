@@ -11,7 +11,7 @@
 
 //For heavy PID turns 
 #define TURN_KP_HEAVY 0.035
-#define TURN_KI_HEAVY 0.0048
+#define TURN_KI_HEAVY 0.005 //0.0048
 #define TURN_KD_HEAVY 0.001
 
 //For main inertial_drive
@@ -179,8 +179,8 @@ void moveRot (float rot, float speed)
 {
   BaseLeftRear.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
   BaseLeftFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
-  BaseRightRear.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
-  BaseRightFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, true);
+  BaseRightFront.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, false);
+  BaseRightRear.rotateFor(rot, rotationUnits::rev, speed, velocityUnits::pct, true);
 }
 
 void turnRot (float rot, float speed, std::string swing){
