@@ -120,14 +120,14 @@ void auton() {
     turn_absolute_inertial(180);
     startBar(-20);
     spinIntake();
-    inertial_drive(32, 95);
+    inertial_drive(33, 95);
     inertial_drive(-10, 80);
     turn_absolute_inertial(240);
     stopBar();
     stopIntake();
     setBar(2);
-    moveRot(1.5, 60);
-    driveToGoal(); //2nd yellow
+    moveRot(1.5, 55);
+    driveToGoal(7); //2nd yellow
     setBar(25);
     turn_absolute_inertial(55, true);
     startBar(100);
@@ -143,27 +143,29 @@ void auton() {
     stopBar();
     turn_absolute_inertial(270);
     spinIntake();
-    inertial_drive(35, 80);
+    inertial_drive(35, 90);
     turn_absolute_inertial(180);
     setBar(2);
     stopIntake();
     inertial_drive(11, 70);
     allBaseVoltage(true,7);
-    vex::task::sleep(750);
+    vex::task::sleep(600);
     closeClaw();
     brake_unchecked();
+    Claw.spin(fwd,7,pct);
     //driveToGoal();//Grab blue
-    inertial_drive(-14, 80);
+    inertial_drive(-14, 85);
     setBar(30);
     turn_absolute_inertial(75, true);
+    Claw.stop(hold);
     spinIntake();
     startBar(50);
-    inertial_drive(85, 90);
+    inertial_drive(85, 95);
     setBar(98);
     openClaw(); //Drop blue
     stopIntake();
     startBar(-50);
-    inertial_drive(-13, 80);
+    inertial_drive(-13, 90);
     turn_absolute_inertial(-45);
     setBar(2);
     inertial_drive(13, 60); //15
@@ -204,14 +206,16 @@ void auton() {
     turn_absolute_inertial(-90);
     inertial_drive(10, 80);
     mogoPos(3, false);
-    inertial_drive(-23, 60);
+    inertial_drive(-24, 60);
     mogoPos(2,false); //Pick goal
     setBar(50);
     spinIntake();
     turn_absolute_inertial(0, true);
+    /*
     inertial_drive(40, 50);
     inertial_drive(-45, 90);
     stopIntake();
+    */
   } 
   
   else if (Left.pressing()){
@@ -240,24 +244,37 @@ void auton() {
     brake_unchecked();
     voltageDist(1150);
     inertial_drive(38, 50,true);
+    /*
+    inertial_drive(10, 90);
+    turn_absolute_inertial(-100);
+    mogoPos(3, false);
+    inertial_drive(-20, 60);
+    inertial_drive(10, 80);
+    turn_absolute_inertial(-150);
+    */
     setBar(25);
     moveRot(.45, 80);
     turn_absolute_inertial(-70);
     inertial_drive(-15, 80);
     moveRot(2, 80);
-    turn_absolute_inertial(-120);
+    turn_absolute_inertial(-135);
+    inertial_drive(-14, 90);
+    inertial_drive(10, 90);
+    turn_absolute_inertial(-115);
     mogoPos(3, false);
     inertial_drive(-29, 60); //Distance
     //inertial_drive(1.2, 60, true); //Sensor
     setMogo(27);
-    inertial_drive(50, 95);
+    inertial_drive(25, 95); //30
+    turn_absolute_inertial(45, true); 
+    inertial_drive(-25, 90);   
   }
   else if (rightRush.pressing()) {
     //Right double rush WP
     //Currently not needed
   }
   else{
-   insaneAuton(0); //Single rush
+    insaneAuton(0); //Single rush
     brake_unchecked();
     voltageDist(920);
     turn_absolute_inertial(0);
@@ -268,7 +285,7 @@ void auton() {
   }
 } 
 
-bool lock= false;
+bool locked= false;
 
 void usercontrol() {
   
@@ -290,7 +307,7 @@ void usercontrol() {
     if (left_speed < 5 && left_speed > -5) {
       // This condition only calls the stop instruction once
       if (stop_left) {
-        if(lock){
+        if(locked || is_skills()){
         BaseLeftRear.stop(hold);
         BaseLeftFront.stop(hold);
         }else{
@@ -312,7 +329,7 @@ void usercontrol() {
     // This is equivalent to the code above
     if (right_speed < 10 && right_speed > -10) {
       if (stop_right) {
-        if(lock){
+        if(locked || is_skills()){
         BaseRightRear.stop(hold);
         BaseRightFront.stop(hold);
       }else{
@@ -396,7 +413,11 @@ void usercontrol() {
       RearMogo.spin(reverse,100,pct);
     } else if(Controller1.ButtonLeft.pressing()){
       //Toggle lock
-      lock=!lock;
+      locked=!locked;
+      Controller1.Screen.setCursor(2, 2);
+      Controller1.Screen.print(locked);
+      Brain.Screen.setCursor(3, 3);
+      Brain.Screen.print(locked);
     } else if (Controller1.ButtonRight.pressing()){
       //Mogo to ring height
       mogoPos(2, false);
