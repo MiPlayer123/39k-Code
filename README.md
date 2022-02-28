@@ -1,7 +1,7 @@
 # 39k-Code
 
-Maing progress. We win these.
+STATES INCOMMING
 
 PID gods
 
-Getting higher autons now
+220+ Skills and 3 match autons
