@@ -3,6 +3,7 @@
 
 #include "kalman.h"
 #include "control.h"
+#include <string>
 
 #define BASE_DT 0.005
 #define BASE_INTEGRAL_THRESHOLD 20
@@ -34,7 +35,7 @@ void inertial_drive(double target, double speed, bool dist=false);
 void moveRot (float rot, float speed);
 
 //Turn Rotations
-void turnRot (float rot, float speed,std::string swing="None");
+void turnRot (float rot, float speed, std::string swing="None");
 
 //Drive to point using odom position
 void driveTo(double xTarget, double yTarget, double targetAngle, double speed);
